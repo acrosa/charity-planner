@@ -3,8 +3,18 @@ import type { ReactNode } from "react";
 
 // Cream "blinds" wipe between stages (DESIGN.md §Animation). Horizontal bars in
 // --background retract in sequence (~750ms), revealing the next stage already
-// composed. Reduced motion → 150ms crossfade, no bars.
+// composed — a deliberate, premium stage curtain that reads as paper sliding
+// away, not a shutter snapping. Reduced motion → 150ms crossfade, no bars.
 const BAR_COUNT = 7;
+
+// One tuned curtain feel: bars hold full, then peel back top→bottom with a soft
+// anticipation curve. The cascade (stagger) does the work; each bar is unhurried.
+// Last bar finishes near ~750ms: 0.46s ease + 6 * 0.048s stagger ≈ 0.75s.
+const BAR_DURATION = 0.46;
+const BAR_STAGGER = 0.048;
+// A weighted ease-in-out: slow grip, quick release, gentle settle — paper, not
+// a roller blind.
+const BAR_EASE = [0.65, 0, 0.2, 1] as const;
 
 export function Blinds({ show }: { show: boolean }) {
   const reduce = useReducedMotion();
@@ -21,8 +31,14 @@ export function Blinds({ show }: { show: boolean }) {
               initial={{ scaleY: 1 }}
               animate={{ scaleY: 1 }}
               exit={{ scaleY: 0 }}
+              // Alternating origins so the bars peel like louvres meeting in the
+              // middle — reads woven, not a single sheet dropping.
               style={{ originY: i % 2 === 0 ? 0 : 1 }}
-              transition={{ duration: 0.55, delay: i * 0.045, ease: [0.7, 0, 0.3, 1] }}
+              transition={{
+                duration: BAR_DURATION,
+                delay: i * BAR_STAGGER,
+                ease: BAR_EASE,
+              }}
             />
           ))}
         </div>
@@ -41,10 +57,14 @@ export function StageTransition({ stageKey, children }: { stageKey: string; chil
     <AnimatePresence mode="wait">
       <motion.div
         key={stageKey}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: reduce ? 0.15 : 0.4, ease: "easeOut" }}
+        initial={reduce ? { opacity: 0 } : { opacity: 0, y: 8 }}
+        animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
+        exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+        transition={
+          reduce
+            ? { duration: 0.15, ease: "easeOut" }
+            : { duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }
+        }
       >
         {children}
       </motion.div>

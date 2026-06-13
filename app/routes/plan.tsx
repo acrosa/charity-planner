@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { Blinds } from "~/components/Blinds";
 import { Interview } from "~/components/Interview";
@@ -25,18 +25,8 @@ export default function Plan() {
   const [newsLoading, setNewsLoading] = useState(false);
   const [voiceOn, setVoiceOn] = useState(false);
   const [location, setLocation] = useState("");
-  const [time, setTime] = useState("");
   const [blinds, setBlinds] = useState(false);
   const recommendStarted = useRef(false);
-
-  // Client-only clock to avoid SSR hydration mismatch.
-  useEffect(() => {
-    const update = () =>
-      setTime(new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
-    update();
-    const id = setInterval(update, 30_000);
-    return () => clearInterval(id);
-  }, []);
 
   const triggerBlinds = () => {
     setBlinds(true);
@@ -109,14 +99,13 @@ export default function Plan() {
         onLocationChange={setLocation}
         stageLabel={stageLabel}
         voiceOn={voiceOn}
-        onToggleVoice={() => setVoiceOn((v) => !v)}
-        time={time}
       />
 
       {stage === "interview" && (
         <Interview
           mode={mode}
           voiceOn={voiceOn}
+          onToggleVoice={() => setVoiceOn((v) => !v)}
           onStageChange={(_s, turns) =>
             setStageLabel(`INTERVIEW${mode === "quick" ? ` (${Math.min(turns + 1, 3)}/3)` : ""}`)
           }

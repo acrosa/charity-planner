@@ -4,7 +4,8 @@ import type { CharityRec } from "~/lib/types";
 
 // Typographic charity entry (DESIGN.md §6). Dashed rank stamp + mono metadata,
 // serif name, why-line, news line. A short cause-tinted rule is the only color.
-// Whole entry is clickable → Daffy. Hover raises 3px + extends the rule.
+// The name + an explicit CTA link to Daffy; the news source is its own link.
+// No wrapping anchor (avoids nested <a>); hover raises 3px + extends the rule.
 export function CharityEntry({
   c,
   index,
@@ -20,11 +21,8 @@ export function CharityEntry({
   const rank = String(c.rank).padStart(2, "0");
 
   return (
-    <motion.a
-      href={c.daffyUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block py-6"
+    <motion.div
+      className="group py-6"
       initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
@@ -52,7 +50,14 @@ export function CharityEntry({
         className="mt-3 font-display leading-tight"
         style={{ fontWeight: 500, fontSize: "clamp(1.3rem, 2vw, 1.7rem)" }}
       >
-        {c.name}
+        <a
+          href={c.daffyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="decoration-[var(--color-hairline)] underline-offset-4 hover:underline"
+        >
+          {c.name}
+        </a>
       </h3>
 
       <p className="mt-2 max-w-2xl text-[var(--color-foreground)]">{c.whyLine}</p>
@@ -67,17 +72,27 @@ export function CharityEntry({
       {c.news ? (
         <p className="mt-2 max-w-2xl text-[13px] text-[var(--color-muted)]">
           {c.news.line}{" "}
-          <span className="underline decoration-[var(--color-hairline)] underline-offset-2">
+          <a
+            href={c.news.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline decoration-[var(--color-hairline)] underline-offset-2 hover:text-[var(--color-foreground)]"
+          >
             {c.news.sourceTitle}
-          </span>
+          </a>
         </p>
       ) : newsLoading ? (
         <span className="news-shimmer mt-3 block h-3 w-2/3 max-w-md rounded" aria-hidden />
       ) : null}
 
-      <span className="mt-3 inline-block font-semibold text-[var(--color-daffy)]">
+      <a
+        href={c.daffyUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-3 inline-block font-semibold text-[var(--color-daffy)]"
+      >
         Give on Daffy →
-      </span>
-    </motion.a>
+      </a>
+    </motion.div>
   );
 }

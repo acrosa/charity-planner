@@ -1,14 +1,31 @@
+import type { ReactNode } from "react";
 import { useState } from "react";
+import { Link } from "react-router";
 import type { Report } from "~/lib/types";
 
 // "Make it real on Daffy" (DESIGN.md §footer). A large section pitching the Daffy
 // donor-advised fund, with the big Daffy-green CTA. Share + upsell are secondary.
 const PITCH = [
-  "Contribute once — cash, stock, or crypto — and take your tax deduction now.",
+  "Contribute once to Daffy — cash, stock, or crypto — and take your tax deduction now.",
   "Grant to 1.5M+ charities anytime, at your pace.",
-  "Flat $3/mo Contributor membership — a fixed fee, never a percentage of your assets.",
+  "Flat $3/mo Daffy Contributor membership — a fixed fee, never a percentage of your assets.",
   "17 tax-free expert portfolios; the causes above are your giving portfolio, growing tax-free until you give it away.",
 ];
+
+// Bold every occurrence of "Daffy" inside a pitch line.
+function withBoldDaffy(line: string): ReactNode[] {
+  return line.split(/(Daffy)/g).map((part, i) =>
+    part === "Daffy" ? (
+      // biome-ignore lint/suspicious/noArrayIndexKey: stable split index
+      <strong key={i} className="font-semibold">
+        {part}
+      </strong>
+    ) : (
+      // biome-ignore lint/suspicious/noArrayIndexKey: stable split index
+      <span key={i}>{part}</span>
+    ),
+  );
+}
 
 export function DaffyFooter({ report }: { report: Report }) {
   const [shared, setShared] = useState(false);
@@ -54,13 +71,13 @@ export function DaffyFooter({ report }: { report: Report }) {
         {PITCH.map((line) => (
           <li key={line} className="flex gap-3 text-[var(--color-foreground)]">
             <span className="mt-2 inline-block size-1.5 shrink-0 rounded-full bg-[var(--color-daffy)]" />
-            <span className="text-[17px] leading-relaxed">{line}</span>
+            <span className="text-[17px] leading-relaxed">{withBoldDaffy(line)}</span>
           </li>
         ))}
       </ul>
 
       <a
-        href="https://www.daffy.org/join"
+        href="https://www.daffy.org/"
         target="_blank"
         rel="noopener noreferrer"
         className="mt-10 inline-flex items-center gap-2 rounded-[0.625rem] bg-[var(--color-daffy)] px-7 py-4 font-semibold text-[var(--color-background)] transition-transform hover:-translate-y-0.5"
@@ -73,13 +90,16 @@ export function DaffyFooter({ report }: { report: Report }) {
           type="button"
           onClick={share}
           disabled={sharing}
-          className="hover:text-[var(--color-foreground)] disabled:opacity-50"
+          className="cursor-pointer hover:text-[var(--color-foreground)] disabled:opacity-50"
         >
           {shared ? "✓ link copied" : sharing ? "creating link…" : "● share this plan"}
         </button>
         <span aria-hidden>·</span>
         <span>
-          {report.meta.totalCorpus.toLocaleString()} charities researched · Claude Build Day
+          {report.meta.totalCorpus.toLocaleString()} charities researched ·{" "}
+          <Link to="/did" className="hover:text-[var(--color-foreground)]">
+            Claude Build Day
+          </Link>
         </span>
       </div>
     </footer>

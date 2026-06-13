@@ -1,24 +1,18 @@
 import { useState } from "react";
+import { Link } from "react-router";
 
-// Sticky meta strip (DESIGN.md §Layout). One mono line on the grid: wordmark left,
-// location/time center, stage + voice toggle right. No border — space separates it.
+// Sticky meta strip (DESIGN.md §Layout). One mono line on the grid: wordmark left
+// (links home), location center, stage right. No border — space separates it. The
+// voice control lives inside the interview now (next to Send), so the strip keeps
+// only a tiny non-interactive status dot.
 export interface MetaStripProps {
   location: string;
   onLocationChange?: (loc: string) => void;
   stageLabel: string; // e.g. "INTERVIEW (2/3)" or "YOUR REPORT"
   voiceOn: boolean;
-  onToggleVoice: () => void;
-  time?: string;
 }
 
-export function MetaStrip({
-  location,
-  onLocationChange,
-  stageLabel,
-  voiceOn,
-  onToggleVoice,
-  time,
-}: MetaStripProps) {
+export function MetaStrip({ location, onLocationChange, stageLabel, voiceOn }: MetaStripProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(location);
 
@@ -30,7 +24,9 @@ export function MetaStrip({
   return (
     <header className="sticky top-0 z-30 bg-[var(--color-background)] px-[clamp(24px,5vw,96px)] pt-6 pb-2">
       <div className="flex items-center justify-between gap-4 font-mono text-[12px] uppercase tracking-[0.08em] text-[var(--color-muted)]">
-        <span className="text-[var(--color-foreground)]">charity planner</span>
+        <Link to="/" className="text-[var(--color-foreground)] transition-opacity hover:opacity-70">
+          charity planner
+        </Link>
         <span className="hidden items-center gap-3 sm:flex">
           {editing ? (
             <input
@@ -55,23 +51,16 @@ export function MetaStrip({
               {location || "set location"}
             </button>
           )}
-          {time && <span aria-hidden>· {time}</span>}
         </span>
-        <span className="flex items-center gap-4">
+        <span className="flex items-center gap-3">
           <span className="hidden md:inline">{stageLabel}</span>
-          <button
-            type="button"
-            onClick={onToggleVoice}
-            aria-pressed={voiceOn}
-            className="flex items-center gap-1.5 uppercase tracking-[0.08em] transition-colors hover:text-[var(--color-foreground)]"
-          >
-            <span
-              className={`inline-block size-2 rounded-full transition-colors ${
-                voiceOn ? "animate-pulse bg-[var(--color-terracotta)]" : "bg-[var(--color-muted)]"
-              }`}
-            />
-            voice
-          </button>
+          {/* Tiny non-interactive status dot — the toggle itself lives in the interview. */}
+          <span
+            aria-hidden
+            className={`inline-block size-2 rounded-full transition-colors ${
+              voiceOn ? "animate-pulse bg-[var(--color-terracotta)]" : "bg-[var(--color-muted)]/50"
+            }`}
+          />
         </span>
       </div>
     </header>

@@ -12,7 +12,10 @@ function Option({ opt }: { opt: FundOption }) {
           {opt.forkLabel}
         </p>
       )}
-      <p className="mt-1 font-display text-xl" style={{ fontWeight: 500 }}>
+      <p
+        className="mt-1 font-display leading-tight"
+        style={{ fontWeight: 500, fontSize: "clamp(1.5rem, 3vw, 1.875rem)" }}
+      >
         {opt.displayName}
       </p>
       <p className="mt-1 text-[14px] opacity-90">{opt.blurb}</p>

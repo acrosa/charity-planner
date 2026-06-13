@@ -108,9 +108,9 @@ export function Report({
         </div>
       </header>
 
-      {/* Philosophy + strategy — letter on cream */}
+      {/* Philosophy + strategy — letter on a distinct white sheet */}
       <section className="mx-auto mt-16 max-w-3xl">
-        <PaperCard tone="cream" rotate={-1.2}>
+        <PaperCard tone="white" rotate={-1.2}>
           <p className="leading-[1.35]" style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)" }}>
             <PhilosophyText text={report.philosophy} terms={report.highlightTerms} />
           </p>

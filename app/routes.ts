@@ -14,4 +14,7 @@ export default [
   route("api/tts", "routes/api.tts.ts"),
   route("api/stt", "routes/api.stt.ts"),
   route("r/:slug", "routes/r.$slug.tsx"),
+  // How-it-was-made scrapbook (from the scrapbook branch). /did is the short alias.
+  route("did", "routes/how-it-was-made.tsx", { id: "did" }),
+  route("how-it-was-made", "routes/how-it-was-made.tsx", { id: "how-it-was-made" }),
 ] satisfies RouteConfig;

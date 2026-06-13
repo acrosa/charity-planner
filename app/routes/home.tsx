@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { Link } from "react-router";
 import { Vignette } from "~/components/Vignette";
 import { CAUSE_HEX } from "~/lib/causeColor";
 import type { Route } from "./+types/home";
@@ -52,18 +53,32 @@ export default function Home() {
   ];
 
   return (
-    <main className="min-h-screen px-[clamp(24px,5vw,96px)] py-[clamp(28px,5vh,72px)]">
-      {/* Top line: wordmark + begin */}
-      <div className="flex items-start justify-between font-mono text-[12px] uppercase tracking-[0.08em] text-[var(--color-muted)]">
-        <span className="text-[var(--color-foreground)]">charity planner</span>
-        <a href="#begin" className="hover:text-[var(--color-foreground)]">
-          ● begin
-        </a>
+    <main className="relative min-h-screen px-[clamp(24px,5vw,96px)] py-[clamp(28px,5vh,72px)]">
+      {/* Sticky begin CTA — pinned top-right, stays visible while scrolling and
+          reads cleanly over the vignettes beneath via a translucent cream chip
+          + blur. Lives in a zero-height row so it overlays rather than pushing
+          the wordmark down. */}
+      <div className="pointer-events-none sticky top-[clamp(20px,4vh,40px)] z-20 h-0">
+        <Link
+          to="/plan"
+          className="group paper-shadow pointer-events-auto ml-auto flex w-fit items-baseline gap-1.5 rounded-paper bg-[var(--color-background)]/80 px-4 py-2 font-display lowercase text-[var(--color-foreground)] backdrop-blur-sm"
+          style={{ fontWeight: 380, fontSize: "1.5rem", lineHeight: 1 }}
+        >
+          begin
+          <span className="inline-block text-[var(--color-terracotta)] transition-transform group-hover:translate-x-1">
+            →
+          </span>
+        </Link>
+      </div>
+
+      {/* Top line: wordmark */}
+      <div className="font-mono text-[12px] uppercase tracking-[0.08em] text-[var(--color-foreground)]">
+        charity planner
       </div>
 
       {/* Wordmark huge */}
       <motion.h1
-        className="mt-[8vh] font-display lowercase leading-[0.95] tracking-[-0.02em]"
+        className="mt-[7vh] font-display lowercase leading-[0.95] tracking-[-0.02em]"
         style={{ fontWeight: 600, fontSize: "clamp(4rem, 10vw, 9rem)" }}
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
@@ -86,8 +101,9 @@ export default function Home() {
         philanthropic planning for <em>everyone</em>.
       </motion.p>
 
-      {/* Scene vignettes — pinned prints, misaligned */}
-      <div className="mt-[12vh] grid grid-cols-1 gap-y-16 sm:grid-cols-12 sm:gap-x-8">
+      {/* Scene vignettes — three pinned prints on an even 12-col row, equal
+          spans + shared baseline so it reads cleanly as a grid. */}
+      <div className="mt-[10vh] grid grid-cols-1 items-end gap-y-12 sm:grid-cols-12 sm:gap-x-8">
         <Vignette
           mode="interview"
           facetCount={5}
@@ -98,30 +114,25 @@ export default function Home() {
         <Vignette
           mode="loading"
           caption="10,000 charities"
-          size={340}
-          className="sm:col-span-5 sm:col-start-6 sm:mt-16"
+          size={300}
+          className="sm:col-span-4 sm:col-start-5"
         />
         <Vignette
           mode="report"
           points={orbitTints}
           caption="your portfolio"
           size={300}
-          className="sm:col-span-3 sm:col-start-10 sm:-mt-8"
+          className="sm:col-span-4 sm:col-start-9"
         />
       </div>
 
-      {/* Explainer trio — eyebrow pattern, diagonal bands */}
-      <div className="mt-[14vh] grid grid-cols-1 gap-12 sm:grid-cols-12">
+      {/* Explainer trio — eyebrow pattern, three even columns on the 12-col
+          grid with aligned tops so the set reads as one connected band. */}
+      <div className="mt-[12vh] grid grid-cols-1 items-start gap-x-8 gap-y-12 sm:grid-cols-12">
         {EYEBROWS.map((e, i) => (
           <motion.div
             key={e.label}
-            className={
-              i === 0
-                ? "sm:col-span-4 sm:col-start-1"
-                : i === 1
-                  ? "sm:col-span-4 sm:col-start-6 sm:mt-12"
-                  : "sm:col-span-4 sm:col-start-9 sm:mt-24"
-            }
+            className="sm:col-span-4"
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
@@ -140,7 +151,7 @@ export default function Home() {
       </div>
 
       {/* Footer CTA */}
-      <section id="begin" className="mt-[16vh] flex flex-wrap items-baseline gap-x-10 gap-y-4">
+      <section id="begin" className="mt-[14vh] flex flex-wrap items-baseline gap-x-10 gap-y-4">
         <a
           href="/plan"
           className="group font-display lowercase text-[var(--color-foreground)]"
@@ -159,8 +170,12 @@ export default function Home() {
         </a>
       </section>
 
-      <footer className="mt-24 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-muted)]">
-        data: 10,000 U.S. nonprofits · built for Claude Build Day · acts on Daffy
+      <footer className="mt-20 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-muted)]">
+        data: 10,000 U.S. nonprofits ·{" "}
+        <Link to="/did" className="hover:text-[var(--color-foreground)] hover:underline">
+          built for Claude Build Day
+        </Link>{" "}
+        · acts on Daffy
       </footer>
     </main>
   );

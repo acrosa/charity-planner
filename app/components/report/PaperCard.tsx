@@ -4,10 +4,11 @@ import type { ReactNode } from "react";
 // A paper artifact (DESIGN.md §Paper artifacts). Flat saturated block, radius 1rem,
 // fixed resting rotation, single contact shadow. Slides up 24px while rotation
 // settles on scroll-into-view. Reduced motion → fade at final angle.
-type Tone = "cream" | "butter" | "terracotta" | "receipt";
+type Tone = "cream" | "white" | "butter" | "terracotta" | "receipt";
 
 const TONE_CLASS: Record<Tone, string> = {
   cream: "bg-[var(--color-background)] text-[var(--color-foreground)]",
+  white: "bg-white text-[var(--color-foreground)]",
   butter: "bg-[var(--color-butter)] text-[#1B1A17]",
   terracotta: "bg-[var(--color-terracotta)] text-[var(--color-background)]",
   receipt: "bg-[var(--color-receipt)] text-[var(--color-foreground)]",

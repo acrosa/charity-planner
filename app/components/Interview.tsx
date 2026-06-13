@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { causeColor } from "~/lib/causeColor";
 import { annotationKey, causeBucketTints, type FacetAnnotation, type Facets } from "~/lib/facets";
 import { useVoice } from "~/lib/useVoice";
+import { DrawnCheck } from "~/scrapbook/primitives";
 import { Scene } from "./Scene";
 import { WordStream } from "./WordStream";
 
@@ -24,6 +25,30 @@ const GLYPH_CHAR: Record<FacetAnnotation["glyph"], string> = {
   star: "✦",
 };
 
+// Small resting rotations so the captured-facet cards read as a scrapbook stack.
+const FACET_ROTATE = [-1.6, 1.4, -1, 1.8, -1.4, 1.2];
+
+// Mic glyph for the voice toggle — solid when on, hairline-stroke when off.
+function MicGlyph({ on }: { on: boolean }) {
+  return (
+    <svg
+      width={14}
+      height={14}
+      viewBox="0 0 24 24"
+      fill={on ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5.5 11a6.5 6.5 0 0 0 13 0" fill="none" />
+      <path d="M12 17.5V21M9 21h6" fill="none" />
+    </svg>
+  );
+}
+
 function ThinkingDots() {
   return (
     <span className="inline-flex gap-1" role="status" aria-label="thinking">
@@ -43,11 +68,13 @@ function ThinkingDots() {
 export function Interview({
   mode,
   voiceOn = false,
+  onToggleVoice,
   onStageChange,
   onComplete,
 }: {
   mode: "quick" | "full";
   voiceOn?: boolean;
+  onToggleVoice?: () => void;
   onStageChange?: (stage: string, userTurns: number) => void;
   onComplete: (facets: Facets) => void;
 }) {
@@ -163,16 +190,17 @@ export function Interview({
             ) : question ? (
               <motion.div
                 key={question}
-                initial={reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(4px)" }}
-                animate={{ opacity: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, filter: "blur(4px)", y: -8 }}
-                transition={{ duration: 0.3 }}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, y: 14, filter: "blur(6px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, filter: "blur(6px)", y: -14 }}
+                transition={{ duration: reduce ? 0.15 : 0.42, ease: "easeOut" }}
               >
                 <WordStream
                   text={question}
                   as="h2"
-                  className="font-display lowercase"
-                  // deliberately smaller than landing display
+                  // The focal display element of the interview.
+                  className="font-display lowercase leading-[1.2] text-[clamp(1.9rem,3.4vw,2.9rem)]"
+                  style={{ fontWeight: 380 }}
                 />
               </motion.div>
             ) : null}
@@ -193,14 +221,14 @@ export function Interview({
               rows={2}
               placeholder={thinking ? "" : "Type your answer…"}
               disabled={thinking}
-              className={`w-full resize-none border-b bg-transparent pb-2 text-lg outline-none transition-colors ${
+              className={`w-full resize-none border-b bg-transparent pb-2 text-2xl outline-none transition-colors placeholder:text-2xl placeholder:text-[var(--color-muted)]/60 ${
                 thinking
                   ? "animate-pulse border-[var(--color-hairline)]"
                   : "border-[var(--color-foreground)]/40 focus:border-b-2 focus:border-[var(--color-foreground)]"
               }`}
               aria-label="Your answer"
             />
-            <div className="mt-3 flex items-center gap-4">
+            <div className="mt-4 flex items-center gap-4">
               <button
                 type="button"
                 onClick={submit}
@@ -209,6 +237,31 @@ export function Interview({
               >
                 {thinking ? <ThinkingDots /> : "send →"}
               </button>
+
+              {/* Prominent voice on/off toggle — pill beside Send. Typed input
+                  always stays available; this just enables hands-free turns. */}
+              {onToggleVoice && (
+                <motion.button
+                  type="button"
+                  onClick={onToggleVoice}
+                  aria-pressed={voiceOn}
+                  aria-label={voiceOn ? "Turn voice off" : "Turn voice on"}
+                  className={`flex items-center gap-2 rounded-full px-4 py-1.5 font-mono text-[12px] uppercase tracking-[0.08em] transition-colors ${
+                    voiceOn
+                      ? "bg-[var(--color-terracotta)] text-[var(--color-background)]"
+                      : "border border-[var(--color-foreground)]/40 text-[var(--color-foreground)] hover:border-[var(--color-foreground)]"
+                  }`}
+                  animate={voiceOn && !reduce ? { scale: [1, 1.04, 1] } : { scale: 1 }}
+                  transition={
+                    voiceOn && !reduce
+                      ? { duration: 1.6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }
+                      : { duration: 0.2 }
+                  }
+                >
+                  <MicGlyph on={voiceOn} />
+                  voice
+                </motion.button>
+              )}
 
               {/* Voice state — speaking / listening (tap to send) / transcribing */}
               {voiceOn && voice.state !== "idle" && (
@@ -243,34 +296,41 @@ export function Interview({
           <Scene mode="interview" facetCount={facetCount} motifTints={tints} />
         </div>
 
-        {/* Handwritten margin annotations */}
-        <ul className="mt-6 space-y-2">
+        {/* Captured facets — small scrapbook paper cards stacking down the margin.
+            Only ever the facets the user actually gave. */}
+        <ul className="mt-6 flex flex-col items-start gap-2.5">
           <AnimatePresence>
             {annotations.map((a, i) => (
               <motion.li
                 key={annotationKey(a)}
-                initial={reduce ? { opacity: 0 } : { opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.35, delay: i * 0.04 }}
-                className="flex items-center gap-2 font-hand text-[1.5rem] leading-tight text-[var(--color-foreground)]"
-                style={{ fontWeight: 600 }}
+                initial={reduce ? { opacity: 0 } : { opacity: 0, x: 16, rotate: 0 }}
+                animate={{ opacity: 1, x: 0, rotate: FACET_ROTATE[i % FACET_ROTATE.length] }}
+                transition={
+                  reduce
+                    ? { duration: 0.15 }
+                    : { type: "spring", stiffness: 280, damping: 24, delay: i * 0.06 }
+                }
               >
-                <span
-                  aria-hidden
-                  style={{ color: a.type === "exclusion" ? "var(--color-terracotta)" : undefined }}
-                >
-                  {GLYPH_CHAR[a.glyph]}
-                </span>
-                <span>{a.label}</span>
-                <motion.span
-                  aria-hidden
-                  className="text-[var(--color-daffy)]"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.25 }}
-                >
-                  ✓
-                </motion.span>
+                <div className="paper-shadow inline-flex items-center gap-2 rounded-paper bg-white px-3.5 py-2 text-[var(--color-foreground)]">
+                  <span
+                    aria-hidden
+                    className="font-hand text-[1.3rem] leading-none"
+                    style={{
+                      color: a.type === "exclusion" ? "var(--color-terracotta)" : undefined,
+                    }}
+                  >
+                    {GLYPH_CHAR[a.glyph]}
+                  </span>
+                  <span
+                    className="font-hand text-[1.5rem] leading-tight"
+                    style={{ fontWeight: 600 }}
+                  >
+                    {a.label}
+                  </span>
+                  <span className="text-[var(--color-daffy)]">
+                    <DrawnCheck size={18} delay={reduce ? 0 : 0.2} />
+                  </span>
+                </div>
               </motion.li>
             ))}
           </AnimatePresence>

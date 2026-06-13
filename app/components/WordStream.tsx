@@ -5,11 +5,13 @@ import { motion, useReducedMotion } from "motion/react";
 export function WordStream({
   text,
   className,
+  style,
   gap = 0.035,
   as = "p",
 }: {
   text: string;
   className?: string;
+  style?: React.CSSProperties;
   gap?: number;
   as?: "p" | "h1" | "h2" | "span";
 }) {
@@ -19,12 +21,17 @@ export function WordStream({
 
   if (reduce) {
     const Tag = as;
-    return <Tag className={className}>{text}</Tag>;
+    return (
+      <Tag className={className} style={style}>
+        {text}
+      </Tag>
+    );
   }
 
   return (
     <MotionTag
       className={className}
+      style={style}
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: gap } } }}
@@ -39,12 +46,12 @@ export function WordStream({
             key={i}
             style={{ display: "inline-block", willChange: "transform, opacity, filter" }}
             variants={{
-              hidden: { opacity: 0, y: 6, filter: "blur(4px)" },
+              hidden: { opacity: 0, y: 12, filter: "blur(6px)" },
               visible: {
                 opacity: 1,
                 y: 0,
                 filter: "blur(0px)",
-                transition: { duration: 0.32, ease: "easeOut" },
+                transition: { duration: 0.38, ease: "easeOut" },
               },
             }}
           >
