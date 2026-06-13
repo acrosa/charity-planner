@@ -53,6 +53,29 @@ test("capture interview screen", async ({ page }) => {
   await page.screenshot({ path: "qa-test-reports/interview.png", fullPage: false });
 });
 
+test("capture interview with captured facets", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.goto("/plan?mode=quick");
+  const input = page.getByLabel("Your answer");
+  await expect(input).toBeEnabled({ timeout: 60_000 });
+  await input.fill(
+    "I grew up in Oakland relying on the local food bank — food, housing, and helping kids get a fair start.",
+  );
+  await page.getByRole("button", { name: /send/i }).click();
+  // Wait for the agent's next question + the facet cards to write in.
+  await expect(input).toHaveValue("", { timeout: 60_000 });
+  await page.waitForTimeout(2500);
+  await page.screenshot({ path: "qa-test-reports/interview-facets.png", fullPage: false });
+});
+
+test("capture /did how-it-was-made", async ({ page }) => {
+  await page.goto("/did");
+  await expect(page).toHaveTitle(/how it was made/i);
+  await page.waitForTimeout(1200);
+  await scrollThrough(page);
+  await page.screenshot({ path: "qa-test-reports/how-it-was-made.png", fullPage: true });
+});
+
 test("reduced-motion report still renders all sections", async ({ browser }) => {
   test.setTimeout(180_000);
   const ctx = await browser.newContext({ reducedMotion: "reduce" });
