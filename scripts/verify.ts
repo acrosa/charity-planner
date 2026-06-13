@@ -69,6 +69,60 @@ async function smoke(baseUrl: string) {
   }
 }
 
+// Ingest check: corpus loaded with non-null embeddings (~9.5k+).
+async function ingestCheck() {
+  try {
+    const { getSql } = await import("../app/db/client");
+    const sql = getSql();
+    const [{ rows }] = await sql<{ rows: number }[]>`
+      select count(*)::int as rows from charities where embedding is not null
+    `;
+    await sql.end();
+    results.push({
+      name: "ingest",
+      status: rows >= 9500 ? "PASS" : "FAIL",
+      required: true,
+      detail: `${rows} embedded rows`,
+    });
+  } catch (err) {
+    results.push({ name: "ingest", status: "FAIL", required: true, detail: String(err).slice(0, 60) });
+  }
+}
+
+// No-leak: exclusion queries must return zero forbidden orgs in the top 10.
+async function noLeakCheck() {
+  try {
+    const { emptyFacets } = await import("../app/lib/facets");
+    const { buildExclusionPlan, isForbidden } = await import("../app/pipeline/exclusions");
+    const { recall, rerankCandidates, selectFinal } = await import("../app/pipeline/retrieval");
+    const { getSql } = await import("../app/db/client");
+
+    const cases: { tags: ("political_advocacy" | "religious")[]; queries: string[]; intent: string }[] = [
+      { tags: ["political_advocacy"], queries: ["feed hungry families", "education for kids"], intent: "hunger and education, no political advocacy" },
+      { tags: ["religious"], queries: ["climate and environment", "scientific research"], intent: "climate and research, no religious orgs" },
+    ];
+    let leaks = 0;
+    for (const c of cases) {
+      const f = emptyFacets();
+      f.exclusions.tags = c.tags;
+      const plan = buildExclusionPlan(f);
+      const cands = await recall(c.queries, plan);
+      const ranked = await rerankCandidates(c.intent, cands);
+      const top = selectFinal(ranked, { facets: f, plan, n: 10 });
+      leaks += top.filter((o) => isForbidden({ name: o.name, cause: o.cause, embeddingText: o.embeddingText }, plan)).length;
+    }
+    await getSql().end();
+    results.push({
+      name: "no-leak",
+      status: leaks === 0 ? "PASS" : "FAIL",
+      required: true,
+      detail: leaks === 0 ? "0 forbidden in top 10" : `${leaks} leaked`,
+    });
+  } catch (err) {
+    results.push({ name: "no-leak", status: "FAIL", required: true, detail: String(err).slice(0, 60) });
+  }
+}
+
 async function main() {
   // 1. Always-achievable code checks.
   run("typecheck", "pnpm typecheck");
@@ -77,9 +131,8 @@ async function main() {
 
   // 2-3. Data checks — need a database.
   if (process.env.DATABASE_URL) {
-    // TODO(/goal): wire ingest-count + no-leak exclusion queries here.
-    skip("ingest", "TODO: implement once ingest lands");
-    skip("no-leak", "TODO: implement once retrieval lands");
+    await ingestCheck();
+    await noLeakCheck();
   } else {
     skip("ingest", "DATABASE_URL not set");
     skip("no-leak", "DATABASE_URL not set");

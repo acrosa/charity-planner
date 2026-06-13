@@ -139,7 +139,26 @@ async function s2() {
     "HARD: zero religious orgs",
     !report.charities.some((c: { cause: string }) => c.cause === "religion"),
   );
-  check("STRETCH: 'stanford' absent", !JSON.stringify(report).toLowerCase().includes("stanford"));
+  // Stretch: "Stanford" absent from everything the report RENDERS (DOM). The raw
+  // facets.freeText payload legitimately contains the phrase but is never shown.
+  // biome-ignore lint/suspicious/noExplicitAny: live JSON
+  const rendered = JSON.stringify({
+    philosophy: report.philosophy,
+    highlightTerms: report.highlightTerms,
+    sections: report.strategySections,
+    summary: report.summaryTrio,
+    portfolio: report.portfolio,
+    plan: report.plan,
+    fund: report.fundPortfolio,
+    // biome-ignore lint/suspicious/noExplicitAny: live JSON
+    charities: report.charities.map((c: any) => ({
+      name: c.name,
+      why: c.whyLine,
+      mission: c.mission,
+      news: c.news,
+    })),
+  }).toLowerCase();
+  check("STRETCH: 'stanford' absent from rendered report", !rendered.includes("stanford"));
   check(
     "portfolio sums $500",
     sum(report.portfolio.items.map((i: { amount: number }) => i.amount)) +

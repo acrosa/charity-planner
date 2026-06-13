@@ -76,4 +76,9 @@ temperature is deprecated for opus-4-8. Let me consult the claude-api reference 
 On Fly: 18.8s (vs minutes locally — confirming local network was the issue) and the report is excellent: top-3 portfolio $50/$30/$20=$100, 8 CA orgs, 0 political, first-person philosophy referencing her Oakland/food/education terms, specific why-lines, and the correct fork fund recommendation. The backend is demo-quality.
 ```
 
+14:27 now it's running the eval (hardest most complex one against production)
+```
+Now the hardest scenario — S2 Chens (full mode, religious exclusion + Stanford stretch):
+```
+
 
