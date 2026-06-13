@@ -56,6 +56,12 @@ export function Scene({
   const svgRef = useRef<SVGSVGElement>(null);
   // Pointer position in viewBox coords (null when not hovering).
   const [ptr, setPtr] = useState<{ x: number; y: number } | null>(null);
+  // Whether the pointer is over the scene — amplifies the ambient motion.
+  const [excited, setExcited] = useState(false);
+
+  // Hover amplifies the always-on motion: bigger floats + a touch more scale.
+  const amp = excited && !reduce ? 1.9 : 1;
+  const baseScale = excited && !reduce ? 1.12 : 1;
 
   function onMove(e: React.PointerEvent<SVGSVGElement>) {
     if (reduce) return;
@@ -147,8 +153,12 @@ export function Scene({
       role="img"
       aria-label="Generative artwork representing your giving plan"
       style={{ width: "100%", height: "100%", overflow: "visible", touchAction: "none" }}
+      onPointerEnter={() => setExcited(true)}
       onPointerMove={onMove}
-      onPointerLeave={() => setPtr(null)}
+      onPointerLeave={() => {
+        setPtr(null);
+        setExcited(false);
+      }}
     >
       <title>Charity Planner scene</title>
 
@@ -206,8 +216,12 @@ export function Scene({
                   reduce
                     ? { opacity: bright ? 0.9 : 0.2 }
                     : {
-                        opacity: bright ? [0.55, 1, 0.55] : [0.12, 0.28, 0.12],
-                        scale: bright ? [1, 1.18, 1] : 1,
+                        opacity: bright
+                          ? [0.55, 1, 0.55]
+                          : excited
+                            ? [0.22, 0.4, 0.22]
+                            : [0.12, 0.28, 0.12],
+                        scale: bright ? [1, 1.18 * baseScale, 1] : excited ? 1.12 : 1,
                       }
                 }
                 transition={
@@ -260,9 +274,9 @@ export function Scene({
               initial={reduce ? false : { scale: 0, opacity: 0 }}
               animate={{
                 opacity: 1,
-                scale: hoverScale(m.x, m.y),
-                x: reduce ? 0 : [0, m.floatX, 0],
-                y: reduce ? 0 : [0, m.floatY, 0],
+                scale: baseScale * hoverScale(m.x, m.y),
+                x: reduce ? 0 : [0, m.floatX * amp, 0],
+                y: reduce ? 0 : [0, m.floatY * amp, 0],
               }}
               transition={{
                 opacity: { duration: 0.4 },
@@ -303,9 +317,9 @@ export function Scene({
             initial={reduce ? false : { scale: 0, opacity: 0 }}
             animate={{
               opacity: 1,
-              scale: hoverScale(p.x, p.y),
-              x: reduce ? 0 : [0, p.floatX, 0],
-              y: reduce ? 0 : [0, p.floatY, 0],
+              scale: baseScale * hoverScale(p.x, p.y),
+              x: reduce ? 0 : [0, p.floatX * amp, 0],
+              y: reduce ? 0 : [0, p.floatY * amp, 0],
             }}
             transition={{
               opacity: { duration: 0.4, delay: i * 0.05 },

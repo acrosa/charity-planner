@@ -2,8 +2,9 @@ import { motion, useReducedMotion } from "motion/react";
 import { Scene, type SceneMode } from "./Scene";
 
 // A small pinned-print scene study on the landing (DESIGN.md §1). Live canvas +
-// mono lowercase caption. Deliberately varied sizes/offsets; fades + rises on
-// scroll-in, once.
+// mono lowercase caption. Always gently animated; on hover the whole study zooms
+// in a touch and the floating elements come alive (the Scene amplifies its own
+// motion + reacts to the pointer). Fades + rises on scroll-in, once.
 export function Vignette({
   mode,
   caption,
@@ -22,15 +23,20 @@ export function Vignette({
   const reduce = useReducedMotion();
   return (
     <motion.figure
-      className={className}
+      className={`${className} cursor-pointer`}
       initial={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6 }}
     >
-      <div style={{ width: size, height: size, maxWidth: "100%" }}>
+      {/* The scene zooms in a bit on hover; its own elements amplify in parallel. */}
+      <motion.div
+        style={{ width: size, height: size, maxWidth: "100%", transformOrigin: "center" }}
+        whileHover={reduce ? undefined : { scale: 1.06 }}
+        transition={{ type: "spring", stiffness: 220, damping: 18 }}
+      >
         <Scene mode={mode} facetCount={facetCount} points={points} progress={0.7} />
-      </div>
+      </motion.div>
       <figcaption className="mt-2 font-mono text-[12px] lowercase tracking-[0.04em] text-[var(--color-muted)]">
         <span className="text-[var(--color-terracotta)]">●</span> {caption}
       </figcaption>

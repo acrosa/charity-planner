@@ -68,6 +68,16 @@ test("capture interview with captured facets", async ({ page }) => {
   await page.screenshot({ path: "qa-test-reports/interview-facets.png", fullPage: false });
 });
 
+test("capture landing vignette on hover (zoom + alive)", async ({ page }) => {
+  await page.goto("/");
+  const portfolio = page.locator("figure", { hasText: "your portfolio" });
+  await expect(portfolio).toBeVisible();
+  await page.waitForTimeout(800);
+  await portfolio.hover();
+  await page.waitForTimeout(600); // let the zoom spring + amplified floats settle
+  await page.screenshot({ path: "qa-test-reports/vignette-hover.png", fullPage: false });
+});
+
 test("capture /did how-it-was-made", async ({ page }) => {
   await page.goto("/did");
   await expect(page).toHaveTitle(/how it was made/i);
