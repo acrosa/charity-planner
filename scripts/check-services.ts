@@ -35,11 +35,20 @@ async function checkWebSearch() {
     const msg = await client.messages.create({
       model: "claude-opus-4-8",
       max_tokens: 512,
-      messages: [{ role: "user", content: "What did the American Red Cross announce most recently? One sentence." }],
+      messages: [
+        {
+          role: "user",
+          content: "What did the American Red Cross announce most recently? One sentence.",
+        },
+      ],
       tools: [{ type: "web_search_20250305", name: "web_search", max_uses: 2 } as never],
     });
     const used = msg.content.some((b) => (b as { type: string }).type === "server_tool_use");
-    rows.push({ service: "Anthropic web_search tool", ok: true, detail: `tool_used=${used} stop=${msg.stop_reason}` });
+    rows.push({
+      service: "Anthropic web_search tool",
+      ok: true,
+      detail: `tool_used=${used} stop=${msg.stop_reason}`,
+    });
   } catch (e) {
     rows.push({ service: "Anthropic web_search tool", ok: false, detail: String(e).slice(0, 120) });
   }
@@ -50,7 +59,10 @@ async function checkVoyageEmbeddings() {
     try {
       const res = await fetch("https://api.voyageai.com/v1/embeddings", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.VOYAGE_API_KEY}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,
+        },
         body: JSON.stringify({
           model: "voyage-4",
           input: ["A food bank serving families in Oakland, California."],
@@ -58,7 +70,11 @@ async function checkVoyageEmbeddings() {
           ...(dims ? { output_dimension: dims } : {}),
         }),
       });
-      const body = (await res.json()) as { data?: { embedding: number[] }[]; error?: unknown; detail?: string };
+      const body = (await res.json()) as {
+        data?: { embedding: number[] }[];
+        error?: unknown;
+        detail?: string;
+      };
       const dim = body.data?.[0]?.embedding?.length;
       rows.push({
         service: `Voyage voyage-4 embed${dims ? ` (output_dimension=${dims})` : " (default)"}`,
@@ -75,11 +91,18 @@ async function checkVoyageRerank() {
   try {
     const res = await fetch("https://api.voyageai.com/v1/rerank", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.VOYAGE_API_KEY}` },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,
+      },
       body: JSON.stringify({
         model: "rerank-2.5",
         query: "help feed hungry families",
-        documents: ["A community food bank in Oakland.", "A software company in New York.", "A wildlife sanctuary."],
+        documents: [
+          "A community food bank in Oakland.",
+          "A software company in New York.",
+          "A wildlife sanctuary.",
+        ],
         top_k: 3,
       }),
     });
@@ -88,7 +111,9 @@ async function checkVoyageRerank() {
     rows.push({
       service: "Voyage rerank-2.5",
       ok: res.ok && !!body.data,
-      detail: res.ok ? `top_index=${top?.index} score=${top?.relevance_score?.toFixed(3)}` : `HTTP ${res.status}`,
+      detail: res.ok
+        ? `top_index=${top?.index} score=${top?.relevance_score?.toFixed(3)}`
+        : `HTTP ${res.status}`,
     });
   } catch (e) {
     rows.push({ service: "Voyage rerank-2.5", ok: false, detail: String(e).slice(0, 120) });
@@ -104,7 +129,8 @@ async function checkPostgres() {
   const sql = postgres(url, { max: 1, prepare: false });
   try {
     const [{ version }] = await sql`select version()`;
-    const ext = await sql`select name, installed_version from pg_available_extensions where name in ('vector','pg_trgm') order by name`;
+    const ext =
+      await sql`select name, installed_version from pg_available_extensions where name in ('vector','pg_trgm') order by name`;
     rows.push({
       service: "Postgres connect",
       ok: true,
@@ -113,7 +139,10 @@ async function checkPostgres() {
     rows.push({
       service: "Postgres extensions",
       ok: ext.length === 2,
-      detail: ext.map((e) => `${e.name}${e.installed_version ? `=${e.installed_version}` : "(available)"}`).join(", ") || "none available",
+      detail:
+        ext
+          .map((e) => `${e.name}${e.installed_version ? `=${e.installed_version}` : "(available)"}`)
+          .join(", ") || "none available",
     });
   } catch (e) {
     rows.push({ service: "Postgres connect", ok: false, detail: String(e).slice(0, 120) });
@@ -124,7 +153,15 @@ async function checkPostgres() {
 
 async function main() {
   console.log("env presence:");
-  for (const k of ["ANTHROPIC_API_KEY", "VOYAGE_API_KEY", "DATABASE_URL", "FLY_API_TOKEN", "MOTION_TOKEN", "ELEVENLABS_API_KEY", "USER_IMESSAGE"]) {
+  for (const k of [
+    "ANTHROPIC_API_KEY",
+    "VOYAGE_API_KEY",
+    "DATABASE_URL",
+    "FLY_API_TOKEN",
+    "MOTION_TOKEN",
+    "ELEVENLABS_API_KEY",
+    "USER_IMESSAGE",
+  ]) {
     console.log(`  ${k.padEnd(20)} ${mask(process.env[k])}`);
   }
   console.log("");
@@ -137,10 +174,13 @@ async function main() {
 
   console.log(`${"SERVICE".padEnd(42)} OK   DETAIL`);
   console.log("-".repeat(96));
-  for (const r of rows) console.log(`${r.service.padEnd(42)} ${(r.ok ? "✓" : "✗").padEnd(4)} ${r.detail}`);
+  for (const r of rows)
+    console.log(`${r.service.padEnd(42)} ${(r.ok ? "✓" : "✗").padEnd(4)} ${r.detail}`);
   console.log("-".repeat(96));
   const failed = rows.filter((r) => !r.ok);
-  console.log(failed.length ? `\n${failed.length} service check(s) FAILED.` : "\nAll service checks passed.");
+  console.log(
+    failed.length ? `\n${failed.length} service check(s) FAILED.` : "\nAll service checks passed.",
+  );
 }
 
 main().catch((e) => {

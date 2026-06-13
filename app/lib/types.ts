@@ -62,14 +62,22 @@ export interface PlanItem {
   note?: string;
 }
 
-export interface FundPortfolioRec {
+export interface FundOption {
   id: string;
   name: string;
   displayName: string;
   riskLevel: string;
   blurb: string;
-  reason: string; // why this portfolio, from the deterministic rule that matched
   allocation: { label: string; pct: number }[];
+  forkLabel?: string; // e.g. "if you give as you go" (fork mode only)
+}
+
+export interface FundPortfolioRec {
+  reason: string; // why this portfolio, from the deterministic rule that matched
+  isFork: boolean; // true when horizon is unknown and we present a fork (BRIEF §7.6)
+  primary: FundOption;
+  alternative?: FundOption; // the second fork branch
+  ruleId: string;
   disclaimer: string;
 }
 

@@ -42,13 +42,22 @@ export default function Home() {
         </p>
       </section>
 
-      <section className="mt-[16vh]">
+      <section className="mt-[16vh] flex flex-wrap items-baseline gap-x-8 gap-y-3">
         <a
-          href="/?mode=quick"
-          className="font-display lowercase text-[var(--color-foreground)] transition-transform"
+          href="/plan"
+          className="group font-display lowercase text-[var(--color-foreground)]"
           style={{ fontWeight: 380, fontSize: "clamp(2.5rem, 5vw, 4rem)" }}
         >
-          begin <span className="text-[var(--color-terracotta)]">→</span>
+          begin{" "}
+          <span className="inline-block text-[var(--color-terracotta)] transition-transform group-hover:translate-x-1.5">
+            →
+          </span>
+        </a>
+        <a
+          href="/plan?mode=quick"
+          className="font-mono text-[13px] uppercase tracking-[0.08em] text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
+        >
+          ● quick — 3 questions
         </a>
       </section>
     </main>

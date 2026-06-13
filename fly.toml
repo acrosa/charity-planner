@@ -14,13 +14,12 @@ primary_region = "sjc"
   min_machines_running = 0
   processes = ["app"]
 
-  [http_service.checks]
-    [http_service.checks.health]
-      method = "get"
-      path = "/api/health"
-      interval = "15s"
-      timeout = "5s"
-      grace_period = "10s"
+  [[http_service.checks]]
+    method = "get"
+    path = "/api/health"
+    interval = "15s"
+    timeout = "5s"
+    grace_period = "10s"
 
 [[vm]]
   size = "shared-cpu-1x"

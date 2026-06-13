@@ -160,7 +160,8 @@ export interface Scrubbable {
 /** True if the org violates the plan (should be removed). */
 export function isForbidden(c: Scrubbable, plan: ExclusionPlan): boolean {
   if (c.cause && plan.excludedCauses.includes(c.cause)) return true;
-  const hay = `${c.name} ${c.cause ?? ""} ${c.embeddingText ?? ""} ${c.mission ?? ""} ${c.description ?? ""}`.toLowerCase();
+  const hay =
+    `${c.name} ${c.cause ?? ""} ${c.embeddingText ?? ""} ${c.mission ?? ""} ${c.description ?? ""}`.toLowerCase();
   return plan.forbiddenPatterns.some((p) => hay.includes(p));
 }
 

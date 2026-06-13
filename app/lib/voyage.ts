@@ -15,11 +15,22 @@ function apiKey(): string {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function voyageFetch<T>(path: string, body: unknown, attempt = 0): Promise<T> {
-  const res = await fetch(`${VOYAGE_BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey()}` },
-    body: JSON.stringify(body),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${VOYAGE_BASE}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey()}` },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(60_000),
+    });
+  } catch (err) {
+    // Network error (ETIMEDOUT, reset, abort) — retry with backoff.
+    if (attempt < 5) {
+      await sleep(Math.min(2000 * 2 ** attempt, 30_000));
+      return voyageFetch<T>(path, body, attempt + 1);
+    }
+    throw err;
+  }
   if (res.ok) return (await res.json()) as T;
 
   // Retry on rate limit / transient server errors with exponential backoff.
@@ -38,10 +49,7 @@ interface EmbedResponse {
 }
 
 /** Embed a batch of texts. `input_type` matters: documents at ingest, query at search. */
-export async function embed(
-  texts: string[],
-  inputType: "document" | "query",
-): Promise<number[][]> {
+export async function embed(texts: string[], inputType: "document" | "query"): Promise<number[][]> {
   if (texts.length === 0) return [];
   const body = {
     model: EMBED_MODEL,

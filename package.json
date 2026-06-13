@@ -22,6 +22,8 @@
     "ingest": "tsx --env-file-if-exists=.env.local scripts/ingest.ts",
     "sanity": "tsx --env-file-if-exists=.env.local scripts/sanity.ts",
     "check:services": "tsx --env-file-if-exists=.env.local scripts/check-services.ts",
+    "scenarios": "tsx --env-file-if-exists=.env.local scripts/scenarios.ts",
+    "verify:live": "tsx --env-file-if-exists=.env.local scripts/verify-live.ts",
     "verify": "tsx --env-file-if-exists=.env.local scripts/verify.ts"
   },
   "dependencies": {

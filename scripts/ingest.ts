@@ -14,13 +14,13 @@ import { createReadStream, mkdirSync, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 import { z } from "zod";
 import { makeSql } from "../app/db/client";
+import { EMBED_DIM, embed, toVectorLiteral } from "../app/lib/voyage";
 import {
   buildEmbeddingText,
   contentHash,
   isBothNull,
   type RawCharity,
 } from "../app/pipeline/embeddingText";
-import { embed, EMBED_DIM, toVectorLiteral } from "../app/lib/voyage";
 
 const DATASET = "dataset/charities_10k.jsonl";
 const BATCH = 64; // docs per Voyage embed request
@@ -44,7 +44,11 @@ interface Prepared extends RawCharity {
   hash: string;
 }
 
-async function loadRecords(): Promise<{ prepared: Prepared[]; skippedBothNull: number; parseErrors: number }> {
+async function loadRecords(): Promise<{
+  prepared: Prepared[];
+  skippedBothNull: number;
+  parseErrors: number;
+}> {
   const rl = createInterface({ input: createReadStream(DATASET), crlfDelay: Infinity });
   const prepared: Prepared[] = [];
   const seen = new Set<string>();
@@ -164,7 +168,10 @@ async function main() {
         embedded += batch.length;
       } catch (err) {
         for (const r of batch) failed.push({ ein: r.ein, error: String(err).slice(0, 200) });
-        console.error(`[ingest] batch ${myIndex} failed (worker ${id}):`, String(err).slice(0, 160));
+        console.error(
+          `[ingest] batch ${myIndex} failed (worker ${id}):`,
+          String(err).slice(0, 160),
+        );
       }
       done++;
       if (done % 10 === 0 || done === batches.length) {

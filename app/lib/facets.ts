@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { type CauseBucket, causeBucket } from "./causeColor";
 
 // The interview's captured-facet payload. Every field is nullable and defaults
 // to "not captured" — the interview and report MUST NEVER fabricate a facet the
@@ -20,11 +21,15 @@ export const ExclusionTag = z.enum([
 export type ExclusionTag = z.infer<typeof ExclusionTag>;
 
 export const StrategyKind = z.enum(["concentrate", "broaden", "broaden_then_focus"]);
-export const RiskKind = z.enum(["established", "newer_ok"]);
+// Risk tiers align with the Daffy fund-selection inputs (proven=2, balanced=3,
+// experimental=4). "newer approaches OK" (RUBRIC S2) maps to experimental.
+export const RiskKind = z.enum(["proven", "balanced", "experimental"]);
 export const ChangeKind = z.enum(["incremental", "systemic"]);
 export const OutcomesKind = z.enum(["wants_evidence", "flexible"]);
-export const HorizonKind = z.enum(["one_year", "multi_year"]);
+// Horizon aligns with Daffy inputs: give-as-you-go vs. grow-the-fund-first.
+export const HorizonKind = z.enum(["year_by_year", "multi_year", "lifetime", "legacy"]);
 export const Cadence = z.enum(["monthly", "annual", "one_time"]);
+export const Coin = z.enum(["bitcoin", "ethereum", "solana", "usdc"]);
 
 export const GeoSchema = z.object({
   raw: z.string().nullable().default(null),
@@ -54,6 +59,14 @@ export const FacetsSchema = z.object({
   outcomes: OutcomesKind.nullable().default(null),
   horizon: HorizonKind.nullable().default(null),
   discretionaryReserve: z.boolean().nullable().default(null),
+  // Crypto is captured ONLY when the user explicitly mentions it — never
+  // inferred, never defaulted true (Daffy rule: "Crypto never unless mentioned").
+  crypto: z
+    .object({
+      mentioned: z.boolean().default(false),
+      coin: Coin.nullable().default(null),
+    })
+    .default({ mentioned: false, coin: null }),
 });
 
 export type Facets = z.infer<typeof FacetsSchema>;
@@ -102,15 +115,20 @@ export function facetAnnotations(f: Facets): FacetAnnotation[] {
   }
   if (f.budget.amount != null) {
     const cad = f.budget.cadence === "monthly" ? "/mo" : f.budget.cadence === "annual" ? "/yr" : "";
-    out.push({ type: "budget", glyph: GLYPH.dollar, label: `${money(f.budget.amount)}${cad}` });
+    out.push({ type: "budget", glyph: GLYPH.budget, label: `${money(f.budget.amount)}${cad}` });
   }
   for (const t of f.exclusions.tags) {
-    out.push({ type: "exclusion", glyph: GLYPH.cross, label: `no ${t.replace(/_/g, " ")}` });
+    out.push({ type: "exclusion", glyph: GLYPH.exclusion, label: `no ${t.replace(/_/g, " ")}` });
   }
   for (const ft of f.exclusions.freeText) {
-    out.push({ type: "exclusion", glyph: GLYPH.cross, label: ft.length > 36 ? `${ft.slice(0, 34)}…` : ft });
+    out.push({
+      type: "exclusion",
+      glyph: GLYPH.exclusion,
+      label: ft.length > 36 ? `${ft.slice(0, 34)}…` : ft,
+    });
   }
-  if (f.strategy) out.push({ type: "strategy", glyph: GLYPH.star, label: STRATEGY_LABEL[f.strategy] });
+  if (f.strategy)
+    out.push({ type: "strategy", glyph: GLYPH.strategy, label: STRATEGY_LABEL[f.strategy] });
   return out;
 }
 
@@ -123,4 +141,9 @@ export function annotationKey(a: FacetAnnotation): string {
 export function newAnnotations(prev: Facets, next: Facets): FacetAnnotation[] {
   const seen = new Set(facetAnnotations(prev).map(annotationKey));
   return facetAnnotations(next).filter((a) => !seen.has(annotationKey(a)));
+}
+
+/** Cause tint buckets for the captured causes — used to color the scene motif. */
+export function causeBucketTints(f: Facets): CauseBucket[] {
+  return f.causes.map((c) => causeBucket(c));
 }

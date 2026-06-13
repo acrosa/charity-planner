@@ -75,6 +75,17 @@ body {
   box-shadow: 0 10px 15px -3px rgb(23 29 44 / 0.08);
 }
 
+/* News line placeholder shimmer (swaps to text when it resolves). */
+@keyframes news-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: 200px 0; }
+}
+.news-shimmer {
+  background-image: linear-gradient(90deg, #ddd8c9 0%, #efeadd 50%, #ddd8c9 100%);
+  background-size: 200px 100%;
+  animation: news-shimmer 1.4s ease-in-out infinite;
+}
+
 /* Reduced motion: every animation collapses to a quick fade. */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -36,6 +36,38 @@ export function getSql() {
   return _client;
 }
 
+/** Drop the cached clients so the next getSql() opens a fresh connection. */
+function resetSql() {
+  const c = _client;
+  _client = undefined;
+  _db = undefined;
+  if (c) c.end({ timeout: 1 }).catch(() => {});
+}
+
+const CONN_ERR =
+  /ETIMEDOUT|EHOSTUNREACH|ECONNREFUSED|ECONNRESET|ENOTFOUND|Connection terminated|CONNECT_TIMEOUT|connection closed|fetch failed/i;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Run a DB operation, retrying on transient connection errors with a fresh
+ * client each time (Neon pooler / flaky networks intermittently drop connects).
+ */
+export async function withDbRetry<T>(fn: () => Promise<T>, attempts = 4): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (!CONN_ERR.test(String(err)) || i === attempts - 1) throw err;
+      resetSql();
+      await sleep(Math.min(800 * 2 ** i, 6000));
+    }
+  }
+  throw lastErr;
+}
+
 /** Lazily-created singleton Drizzle client — importing never throws without a URL. */
 export function getDb() {
   if (_db) return _db;

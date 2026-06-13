@@ -10,18 +10,31 @@ export const MODEL = "claude-opus-4-8";
 let _client: Anthropic | undefined;
 export function anthropic(): Anthropic {
   if (!_client) {
-    _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+    // Generous retries + timeout absorb transient connection blips (the SDK
+    // retries connection errors / 429 / 5xx with backoff).
+    _client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      maxRetries: 4,
+      timeout: 120_000,
+    });
   }
   return _client;
 }
 
 /** Convert a Zod schema to a JSON Schema usable as an Anthropic tool input_schema. */
 export function toToolSchema(schema: z.ZodType): Record<string, unknown> {
-  const json = z.toJSONSchema(schema, { target: "draft-7", io: "output" }) as Record<string, unknown>;
+  const json = z.toJSONSchema(schema, { target: "draft-7", io: "output" }) as Record<
+    string,
+    unknown
+  >;
   json.$schema = undefined;
   delete json.$schema;
   return json;
 }
+
+// Opus 4.8 controls reasoning depth/cost via effort (temperature/top_p are
+// removed and 400). Keep extraction fast and report prose thorough.
+export type Effort = "low" | "medium" | "high";
 
 interface StructuredOpts<T> {
   system: string;
@@ -30,7 +43,7 @@ interface StructuredOpts<T> {
   toolName: string;
   toolDescription?: string;
   maxTokens?: number;
-  temperature?: number;
+  effort?: Effort;
   /** Number of validation retries before giving up (default 1). */
   retries?: number;
 }
@@ -47,7 +60,7 @@ export async function structured<T>(opts: StructuredOpts<T>): Promise<T | null> 
     toolName,
     toolDescription,
     maxTokens = 2048,
-    temperature = 0.3,
+    effort = "medium",
     retries = 1,
   } = opts;
   const inputSchema = toToolSchema(schema);
@@ -57,7 +70,7 @@ export async function structured<T>(opts: StructuredOpts<T>): Promise<T | null> 
     const res = await anthropic().messages.create({
       model: MODEL,
       max_tokens: maxTokens,
-      temperature,
+      output_config: { effort },
       system,
       tools: [
         {
@@ -98,12 +111,12 @@ export async function text(opts: {
   system: string;
   prompt: string;
   maxTokens?: number;
-  temperature?: number;
+  effort?: Effort;
 }): Promise<string> {
   const res = await anthropic().messages.create({
     model: MODEL,
     max_tokens: opts.maxTokens ?? 1024,
-    temperature: opts.temperature ?? 0.5,
+    output_config: { effort: opts.effort ?? "medium" },
     system: opts.system,
     messages: [{ role: "user", content: opts.prompt }],
   });
