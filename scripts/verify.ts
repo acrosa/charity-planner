@@ -85,7 +85,12 @@ async function ingestCheck() {
       detail: `${rows} embedded rows`,
     });
   } catch (err) {
-    results.push({ name: "ingest", status: "FAIL", required: true, detail: String(err).slice(0, 60) });
+    results.push({
+      name: "ingest",
+      status: "FAIL",
+      required: true,
+      detail: String(err).slice(0, 60),
+    });
   }
 }
 
@@ -97,9 +102,21 @@ async function noLeakCheck() {
     const { recall, rerankCandidates, selectFinal } = await import("../app/pipeline/retrieval");
     const { getSql } = await import("../app/db/client");
 
-    const cases: { tags: ("political_advocacy" | "religious")[]; queries: string[]; intent: string }[] = [
-      { tags: ["political_advocacy"], queries: ["feed hungry families", "education for kids"], intent: "hunger and education, no political advocacy" },
-      { tags: ["religious"], queries: ["climate and environment", "scientific research"], intent: "climate and research, no religious orgs" },
+    const cases: {
+      tags: ("political_advocacy" | "religious")[];
+      queries: string[];
+      intent: string;
+    }[] = [
+      {
+        tags: ["political_advocacy"],
+        queries: ["feed hungry families", "education for kids"],
+        intent: "hunger and education, no political advocacy",
+      },
+      {
+        tags: ["religious"],
+        queries: ["climate and environment", "scientific research"],
+        intent: "climate and research, no religious orgs",
+      },
     ];
     let leaks = 0;
     for (const c of cases) {
@@ -109,7 +126,9 @@ async function noLeakCheck() {
       const cands = await recall(c.queries, plan);
       const ranked = await rerankCandidates(c.intent, cands);
       const top = selectFinal(ranked, { facets: f, plan, n: 10 });
-      leaks += top.filter((o) => isForbidden({ name: o.name, cause: o.cause, embeddingText: o.embeddingText }, plan)).length;
+      leaks += top.filter((o) =>
+        isForbidden({ name: o.name, cause: o.cause, embeddingText: o.embeddingText }, plan),
+      ).length;
     }
     await getSql().end();
     results.push({
@@ -119,7 +138,12 @@ async function noLeakCheck() {
       detail: leaks === 0 ? "0 forbidden in top 10" : `${leaks} leaked`,
     });
   } catch (err) {
-    results.push({ name: "no-leak", status: "FAIL", required: true, detail: String(err).slice(0, 60) });
+    results.push({
+      name: "no-leak",
+      status: "FAIL",
+      required: true,
+      detail: String(err).slice(0, 60),
+    });
   }
 }
 

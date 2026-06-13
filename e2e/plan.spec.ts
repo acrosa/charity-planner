@@ -32,10 +32,12 @@ test("Maria quick interview renders a complete report", async ({ page }) => {
   // The report header appears once recommend resolves.
   const reportHeading = page.getByRole("heading", { name: /a plan made/i });
   await expect(reportHeading).toBeVisible({ timeout: 120_000 });
+  // Let the blinds transition retract and paper cards settle.
+  await page.waitForTimeout(1500);
 
-  // Sections present.
-  await expect(page.getByText(/your portfolio/i)).toBeVisible();
-  await expect(page.getByText(/your researched shortlist/i)).toBeVisible();
+  // Sections present (unambiguous locators).
+  await expect(page.getByRole("heading", { name: /where it goes/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /your researched shortlist/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /make it real on daffy/i })).toBeVisible();
 
   // Every charity has a resolvable Daffy link.
