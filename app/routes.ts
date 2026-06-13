@@ -11,5 +11,7 @@ export default [
   route("api/search", "routes/api.search.ts"),
   route("api/news", "routes/api.news.ts"),
   route("api/share", "routes/api.share.ts"),
+  route("api/tts", "routes/api.tts.ts"),
+  route("api/stt", "routes/api.stt.ts"),
   route("r/:slug", "routes/r.$slug.tsx"),
 ] satisfies RouteConfig;

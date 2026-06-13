@@ -116,6 +116,7 @@ export default function Plan() {
       {stage === "interview" && (
         <Interview
           mode={mode}
+          voiceOn={voiceOn}
           onStageChange={(_s, turns) =>
             setStageLabel(`INTERVIEW${mode === "quick" ? ` (${Math.min(turns + 1, 3)}/3)` : ""}`)
           }

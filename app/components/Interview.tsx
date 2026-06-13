@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { causeColor } from "~/lib/causeColor";
 import { annotationKey, causeBucketTints, type FacetAnnotation, type Facets } from "~/lib/facets";
+import { useVoice } from "~/lib/useVoice";
 import { Scene } from "./Scene";
 import { WordStream } from "./WordStream";
 
@@ -41,10 +42,12 @@ function ThinkingDots() {
 
 export function Interview({
   mode,
+  voiceOn = false,
   onStageChange,
   onComplete,
 }: {
   mode: "quick" | "full";
+  voiceOn?: boolean;
   onStageChange?: (stage: string, userTurns: number) => void;
   onComplete: (facets: Facets) => void;
 }) {
@@ -57,6 +60,8 @@ export function Interview({
   const [input, setInput] = useState("");
   const [started, setStarted] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const voice = useVoice();
+  const voicedRef = useRef<string | null>(null);
 
   async function callTurn(nextHistory: Msg[], currentFacets: Facets | undefined) {
     setThinking(true);
@@ -104,14 +109,43 @@ export function Interview({
     }
   }, [question, history.length]);
 
-  const submit = () => {
-    const text = input.trim();
+  const submitText = (raw: string) => {
+    const text = raw.trim();
     if (!text || thinking) return;
     setInput("");
     const next: Msg[] = [...history, { role: "user", text }];
     setHistory(next);
     callTurn(next, facets);
   };
+
+  const submit = () => submitText(input);
+
+  // Voice turn: when a new question is showing and voice is on, speak it, then
+  // auto-listen (silence-VAD) and submit the transcript. Hands-free.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed on question/voiceOn
+  useEffect(() => {
+    if (!voiceOn || !question || thinking) return;
+    if (voicedRef.current === question) return;
+    voicedRef.current = question;
+    let aborted = false;
+    voice.reset();
+    (async () => {
+      await voice.speak(question);
+      if (aborted) return;
+      const transcript = await voice.listen();
+      if (!aborted && transcript.trim()) submitText(transcript);
+    })();
+    return () => {
+      aborted = true;
+      voice.cancel();
+    };
+  }, [voiceOn, question, thinking]);
+
+  // Turning voice off mid-turn stops any playback/recording immediately.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: react to voiceOn only
+  useEffect(() => {
+    if (!voiceOn) voice.cancel();
+  }, [voiceOn]);
 
   const facetCount = facets ? countFacets(facets) : 0;
   const tints = facets ? causeBucketTints(facets).map((b) => causeColor(b)) : [];
@@ -175,6 +209,29 @@ export function Interview({
               >
                 {thinking ? <ThinkingDots /> : "send →"}
               </button>
+
+              {/* Voice state — speaking / listening (tap to send) / transcribing */}
+              {voiceOn && voice.state !== "idle" && (
+                <motion.button
+                  type="button"
+                  onClick={() => voice.sendNow()}
+                  disabled={voice.state !== "listening"}
+                  className="flex items-center gap-2 rounded-full bg-[var(--color-terracotta)] px-4 py-1.5 font-mono text-[12px] uppercase tracking-[0.08em] text-[var(--color-background)] disabled:opacity-70"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                >
+                  <motion.span
+                    className="inline-block size-2 rounded-full bg-[var(--color-background)]"
+                    animate={{ opacity: [0.4, 1, 0.4] }}
+                    transition={{ duration: 1.1, repeat: Number.POSITIVE_INFINITY }}
+                  />
+                  {voice.state === "speaking"
+                    ? "speaking…"
+                    : voice.state === "listening"
+                      ? "listening… tap to send"
+                      : "transcribing…"}
+                </motion.button>
+              )}
             </div>
           </div>
         </div>
