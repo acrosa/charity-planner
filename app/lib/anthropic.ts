@@ -91,7 +91,7 @@ export async function structured<T>(opts: StructuredOpts<T>): Promise<T | null> 
       ],
     });
     const block = res.content.find((b) => b.type === "tool_use");
-    if (!block || block.type !== "tool_use") {
+    if (block?.type !== "tool_use") {
       lastErr = "no tool_use block";
       continue;
     }

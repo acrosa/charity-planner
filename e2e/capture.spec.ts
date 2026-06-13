@@ -49,6 +49,8 @@ const S3_FACETS = {
 test("capture landing", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await page.waitForTimeout(1200); // let mount animations settle
+  await scrollThrough(page); // trigger whileInView vignettes + explainer trio
   await page.screenshot({ path: "qa-test-reports/landing.png", fullPage: true });
 });
 

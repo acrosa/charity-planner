@@ -22,12 +22,6 @@ interface RawPortfolio {
 
 const PORTFOLIOS = new Map<string, RawPortfolio>();
 for (const p of daffyData.portfolios as RawPortfolio[]) PORTFOLIOS.set(p.id, p);
-const CUSTOM = daffyData.custom as unknown as {
-  id: string;
-  name: string;
-  displayName: string;
-  description: string;
-};
 const DISCLAIMER = daffyData.meta.disclaimer as string;
 
 const RISK_TO_TIER: Record<string, number> = { proven: 2, balanced: 3, experimental: 4 };
@@ -66,17 +60,6 @@ function toOption(id: string, forkLabel?: string): FundOption | null {
     blurb: p.bestFor || p.description,
     allocation: allocationOf(p),
     forkLabel,
-  };
-}
-
-function customOption(): FundOption {
-  return {
-    id: CUSTOM.id,
-    name: CUSTOM.name,
-    displayName: CUSTOM.displayName,
-    riskLevel: "custom",
-    blurb: CUSTOM.description,
-    allocation: [],
   };
 }
 

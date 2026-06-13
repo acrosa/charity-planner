@@ -31,7 +31,7 @@ export async function fetchCharityNews(charity: {
     maxTokens: 900,
   });
 
-  if (!search || !search.text) {
+  if (!search?.text) {
     cache.set(charity.ein, null);
     return null;
   }

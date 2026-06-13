@@ -48,7 +48,7 @@ say "<MESSAGE>"
 
 ## 5. How we're building it (detailed spec & TODO list)
 
-- [ ] 1. Verify the third-party services are accessible, we can authenticate and use them. See `.env.local`. Services:
+- [X] 1. Verify the third-party services are accessible, we can authenticate and use them. See `.env.local`. Services:
   - **Anthropic Claude** — interview, expansion, personalization, and news web search (`claude-opus-4-8`) · `ANTHROPIC_API_KEY` · _required_
   - **Voyage AI** — embeddings (`voyage-4`) + reranker (`rerank-2.5`) · `VOYAGE_API_KEY` · _required_ · full 10k corpus embedded; `rerank-2.5` runs live.
   - **Neon** — managed Postgres with `pgvector` + `pg_trgm` · `DATABASE_URL` · _required_
@@ -56,18 +56,18 @@ say "<MESSAGE>"
   - **Daffy** — charity deep links (`daffy.org/charities/{ein}`) + the portfolio catalog (`data/daffy_portfolios.json`) · public, no key
   - **Motion+ (Motion AI Kit)** — premium animation registry · `MOTION_TOKEN` · _optional, app falls back without it_
   - **ElevenLabs** — voice mode: agent TTS (spoken questions) + Scribe STT (spoken answers) · `ELEVENLABS_API_KEY` · **TTS + Scribe STT both work; voice is hands-free** (auto-listen + silence-VAD or full bidirectional if Eleven labs api supports it easily). Typed input always remains.
-- [ ] 2. Process the raw charity data (`dataset/charities_10k.jsonl` file), and generate embeddings for the mission statementes and descriptions; then ingest it into our PostgreSQL table. We will use this table to do vector search when recommending charities in our pipeline. _(full 10k ingested, all embedded)_
-- [ ] 3. Setup the typescript react web app. Including the design style guidelines, dependencies, linter, tests and integration tests. When running tests for final verification let's save screenshots for the audit of core flows working, this will be used later to verify the app works end-to-end by humans (put each interview test on it's own folder `qa-test-reports/`).
-- [ ] 4. Perform a deployment of the basic web app structure (without the functionality). We want to test we can deploy and keep this always green.
-- [ ] 5. Implement the charity planner landing page following the design spec `DESIGN.md`.
-- [ ] 6. Implement the quick interview (we will do the default one later) which includes the animations, transitions and generation of the report (pipeline, questions, analysis, charities vetting and news, among other things). `DESIGN.md` helps with the design and look and feel here too.
-- [ ] 7. Verify the flow works end-to-end with integration tests using sample interview data to verify the reports make sense. Save screenshots on a subfolder in `qa-test-reports/`.
+- [X] 2. Process the raw charity data (`dataset/charities_10k.jsonl` file), and generate embeddings for the mission statementes and descriptions; then ingest it into our PostgreSQL table. We will use this table to do vector search when recommending charities in our pipeline. _(full 10k ingested, all embedded)_
+- [X] 3. Setup the typescript react web app. Including the design style guidelines, dependencies, linter, tests and integration tests. When running tests for final verification let's save screenshots for the audit of core flows working, this will be used later to verify the app works end-to-end by humans (put each interview test on it's own folder `qa-test-reports/`).
+- [X] 4. Perform a deployment of the basic web app structure (without the functionality). We want to test we can deploy and keep this always green.
+- [X] 5. Implement the charity planner landing page following the design spec `DESIGN.md`.
+- [X] 6. Implement the quick interview (we will do the default one later) which includes the animations, transitions and generation of the report (pipeline, questions, analysis, charities vetting and news, among other things). `DESIGN.md` helps with the design and look and feel here too.
+- [X] 7. Verify the flow works end-to-end with integration tests using sample interview data to verify the reports make sense. Save screenshots on a subfolder in `qa-test-reports/`.
 - [ ] 8. Make adjustments based on the evaluation of the reports quality. Iterate this until it's high quality.
-- [ ] 9. Deploy the MVP version to production and do a full end-to-end test there. _(live: https://<app>.fly.dev)_
+- [X] 9. Deploy the MVP version to production and do a full end-to-end test there. _(live: https://<app>.fly.dev)_
 - [ ] 10. Work on delight features, look at the report screenshots and make sure the layouts are readable and the design spec is reflected on the MVP `DESIGN.md`.
-- [ ] 11. Daffy portfolio allocation visualization, per-charity news grounding, etc. When presenting the report plan we want to show details about the portfolios (composition and a chart), small news quotes & links for the charities and other information that might be useful to augment the plan.
+- [X] 11. Daffy portfolio allocation visualization, per-charity news grounding, etc. When presenting the report plan we want to show details about the portfolios (composition and a chart), small news quotes & links for the charities and other information that might be useful to augment the plan.
 - [ ] 12. Voice mode — to make the experience delightful we can turn this into a voice interview. This will be specially useful for people who will answer an engage in a better way using voice conversations. A single toggle (default OFF until the user clicks it) that speaks the agent's questions (ElevenLabs TTS) and captures spoken answers (ElevenLabs Scribe STT); typed input + on-screen text always remain. Turning voice mode on/off should be easy accessible and clearly indicated on the UX as a prominent and subtly animated UI element.
-- [ ] 13. Shareable report URL. Once a user gets a plan it might be enticing to share it in social networks for others to try the tool. This could help turn the planner into a more viral loop so more people can benefit from it. Think `year in review` end of year viral experiences from spotify, apple music, and others.
+- [X] 13. Shareable report URL. Once a user gets a plan it might be enticing to share it in social networks for others to try the tool. This could help turn the planner into a more viral loop so more people can benefit from it. Think `year in review` end of year viral experiences from spotify, apple music, and others.
 - [ ] 14. Fully conversational experience — with voice mode on, the agent speaks and listens end-to-end (ElevenLabs TTS + Scribe STT), making the interview hands-free. _(hands-free: auto-listen + silence detection)_
 
 **Important**: Given the size of the tasks outlined here keep a record of each step as a way to keep track what's done. Update this document with `- [X]` when done on a task. See `Orchestration` for more details.

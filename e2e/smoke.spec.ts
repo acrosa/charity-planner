@@ -7,7 +7,8 @@ test("landing page renders the wordmark and begin CTA", async ({ page }) => {
   await page.goto("/");
   await expect(page).toHaveTitle(/Charity Planner/i);
   await expect(page.getByRole("heading", { level: 1 })).toContainText(/charity/i);
-  await expect(page.getByRole("link", { name: /begin/i })).toBeVisible();
+  // The big footer CTA links to the interview.
+  await expect(page.getByRole("link", { name: "begin →" })).toHaveAttribute("href", "/plan");
 });
 
 test("/api/health returns 200 ok", async ({ request }) => {

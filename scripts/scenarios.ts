@@ -6,7 +6,7 @@
  * Run: pnpm tsx --env-file-if-exists=.env.local scripts/scenarios.ts
  */
 import { getSql } from "../app/db/client";
-import { emptyFacets, type Facets } from "../app/lib/facets";
+import { emptyFacets } from "../app/lib/facets";
 import { type InterviewMode, OPENING_QUESTION, runInterviewTurn } from "../app/llm/interview";
 import { generateReport } from "../app/pipeline/recommend";
 

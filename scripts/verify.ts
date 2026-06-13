@@ -72,12 +72,13 @@ async function smoke(baseUrl: string) {
 // Ingest check: corpus loaded with non-null embeddings (~9.5k+).
 async function ingestCheck() {
   try {
-    const { getSql } = await import("../app/db/client");
-    const sql = getSql();
-    const [{ rows }] = await sql<{ rows: number }[]>`
-      select count(*)::int as rows from charities where embedding is not null
-    `;
-    await sql.end();
+    const { getSql, withDbRetry } = await import("../app/db/client");
+    const [{ rows }] = await withDbRetry(
+      () =>
+        getSql()<{ rows: number }[]>`
+          select count(*)::int as rows from charities where embedding is not null
+        `,
+    );
     results.push({
       name: "ingest",
       status: rows >= 9500 ? "PASS" : "FAIL",
@@ -166,7 +167,8 @@ async function main() {
   const baseUrl = process.env.BASE_URL;
   if (baseUrl) {
     await smoke(baseUrl);
-    run("playwright", "pnpm e2e", true);
+    // Happy-path only — the capture spec is for screenshots, not a gate.
+    run("playwright", "pnpm exec playwright test e2e/smoke.spec.ts e2e/plan.spec.ts", true);
   } else {
     skip("smoke", "BASE_URL not set");
     skip("playwright", "BASE_URL not set");
