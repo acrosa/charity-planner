@@ -150,8 +150,8 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Footer CTA */}
-      <section id="begin" className="mt-[14vh] flex flex-wrap items-baseline gap-x-10 gap-y-4">
+      {/* Footer CTA — the big "begin", with the quick shortcut tucked beneath it. */}
+      <section id="begin" className="mt-[14vh] flex flex-col items-start gap-2">
         <a
           href="/plan"
           className="group font-display lowercase text-[var(--color-foreground)]"
@@ -164,9 +164,9 @@ export default function Home() {
         </a>
         <a
           href="/plan?mode=quick"
-          className="font-mono text-[13px] uppercase tracking-[0.08em] text-[var(--color-muted)] hover:text-[var(--color-foreground)]"
+          className="font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-muted)] transition-colors hover:text-[var(--color-foreground)]"
         >
-          ● quick — 3 questions
+          or take the quick three-question version →
         </a>
       </section>
 
