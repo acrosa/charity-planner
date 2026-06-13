@@ -6,15 +6,12 @@ Read it first, then the three spec files it points to. Keep it short and current
 ## What this project is
 
 **Charity Planner** turns a short structured interview into a researched,
-transparent, actionable giving strategy — the kind of philanthropic advice
-wealthy families pay advisors thousands for, free for everyone — with a clear
-handoff to act on it through Daffy. Full framing in `BRIEF.md`.
+transparent, actionable giving strategy — the kind of philanthropic planning wealthy families pay advisors thousands for, free for everyone — with a clear handoff to act on it through Daffy. Full framing in `BRIEF.md`.
 
 ## Source of truth (read in this order)
 
 1. **`BRIEF.md`** — problem, scope, definition of done, and the ordered TODO
-   list. This is the build plan. **When you finish a TODO item, mark it `- [X]`
-   in `BRIEF.md`** so progress is durable across sessions.
+   list. This is the build plan. **When you finish a TODO item, mark it `- [X]` in `BRIEF.md`** so progress is durable across sessions.
 2. **`RUBRIC.md`** — the mandatory pass/fail grading contract. Gate only on
    behaviour that must always hold (sections render, dollar sums exact, excluded
    orgs never appear, the live URL works). Soft quality numbers are reported, not

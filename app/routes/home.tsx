@@ -2,7 +2,7 @@ import type { Route } from "./+types/home";
 
 export function meta(_args: Route.MetaArgs) {
   return [
-    { title: "Charity Planner — philanthropic advice for everyone" },
+    { title: "Charity Planner — philanthropic planning for everyone" },
     {
       name: "description",
       content:
@@ -38,7 +38,7 @@ export default function Home() {
           className="mt-12 max-w-2xl font-display lowercase text-[var(--color-foreground)]"
           style={{ fontWeight: 380, fontSize: "clamp(1.6rem, 3vw, 2.4rem)", lineHeight: 1.3 }}
         >
-          philanthropic advice for <em>everyone</em>.
+          philanthropic planning for <em>everyone</em>.
         </p>
       </section>
 
