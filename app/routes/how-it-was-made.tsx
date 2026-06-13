@@ -163,6 +163,17 @@ const SERVICES: Array<{ label: string; detail: string }> = [
   { label: "fly.io", detail: "deploy-ready" },
 ];
 
+// The `pnpm verify` gate, run against the live URL — the payoff card mirrors the
+// services checklist (same DrawnCheck rhythm) to bookend the day.
+const VERIFY: Array<{ label: string; detail: string }> = [
+  { label: "typecheck + biome", detail: "clean" },
+  { label: "27 unit tests", detail: "green" },
+  { label: "ingest", detail: "10,000 rows embedded" },
+  { label: "no-leak", detail: "0 forbidden in top 10" },
+  { label: "smoke", detail: "/ + /api/health · 200" },
+  { label: "playwright", detail: "happy path" },
+];
+
 export default function HowItWasMade() {
   const timelineRef = useRef<HTMLDivElement>(null);
 
@@ -491,6 +502,139 @@ export default function HowItWasMade() {
             </p>
             <p className="mt-4 flex items-center gap-2 font-hand text-[1.6rem] text-terracotta">
               <Doodle name="arrow" size={22} /> you’re reading it.
+            </p>
+          </Paper>
+        </Ev>
+
+        {/* 13 — Tests before the UI */}
+        <Ev time="1:46" mer="pm" color={CAUSE_HEX.research}>
+          <Paper tone="receipt" rotate={-1.3} className="p-6 sm:p-7">
+            <h2 className={HEADLINE}>Tests before pixels.</h2>
+            <p className="mt-2 text-[15px] text-foreground/85">
+              Backend typechecked clean — and before a single component, it wrote a scenario harness
+              to check the RUBRIC assertions at the data layer: facets captured, dollars summing,
+              exclusions holding.
+            </p>
+            <MarginNote rotate={-2} className="mt-4">
+              data first, then pixels.
+            </MarginNote>
+          </Paper>
+        </Ev>
+
+        {/* 14 — Very meta: it reads its own docs */}
+        <Ev time="1:47" mer="pm" color={INK}>
+          <Terminal title="claude — self-check">
+            <Prompt>
+              <span className="text-butter">temperature</span> is deprecated for{" "}
+              <span className="text-butter">opus-4-8</span> — let me check the claude-api reference
+              rather than guess.
+            </Prompt>
+            <p className="mt-3 text-background/55">↳ the model, reading its own docs. very meta.</p>
+          </Terminal>
+        </Ev>
+
+        {/* 15 — Deployed, and the first report is good */}
+        <Ev time="2:22" mer="pm" color={CAUSE_HEX.food}>
+          <Paper tone="butter" rotate={1.6} className="p-6 sm:p-7">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className={HEADLINE}>Deployed — and it’s good.</h2>
+              <Stamp label="Nº 04" />
+            </div>
+            <p className="text-[15px] text-foreground/85">
+              First full report on Fly in <span className="font-mono text-[13px]">18.8s</span>.
+              Maria’s plan came back demo-quality on the very first run.
+            </p>
+            <div className="mt-5 flex items-center gap-3 font-mono text-[15px]">
+              <span className="mr-1 text-[10px] text-foreground/55 uppercase tracking-[0.12em]">
+                top-3 split
+              </span>
+              <span>$50</span>
+              <span className="text-foreground/40">+</span>
+              <span>$30</span>
+              <span className="text-foreground/40">+</span>
+              <span>$20</span>
+              <span className="text-foreground/40">=</span>
+              <span style={{ fontWeight: 600 }}>$100</span>
+            </div>
+            <p className="mt-4 text-[15px] text-foreground/80">
+              Eight California orgs, zero political, a first-person philosophy in her own words, and
+              the right Daffy fork fund.
+            </p>
+          </Paper>
+        </Ev>
+
+        {/* 16 — The hardest scenario sets up the tension */}
+        <Ev time="2:27" mer="pm" color={CAUSE_HEX.faith}>
+          <Paper tone="terracotta" rotate={-2.2} className="max-w-md p-5 sm:p-6">
+            <p className="font-mono text-[10px] uppercase tracking-[0.12em] opacity-70">
+              the hardest test
+            </p>
+            <h2 className={`mt-2 ${HEADLINE}`}>The Chens.</h2>
+            <p className="mt-2 text-[15px] leading-relaxed">
+              Full mode, two exclusions at once: no religious orgs (structured) and nothing
+              Stanford-affiliated (free text). The ambitious bet — can it honor a constraint you
+              only typed in passing?
+            </p>
+          </Paper>
+        </Ev>
+
+        {/* 17 — All green: the verify gate passes vs. live */}
+        <Ev time="2:44" mer="pm" color={CAUSE_HEX.environment}>
+          <Paper tone="receipt" rotate={-1.4} className="p-6 sm:p-7">
+            <div className="mb-4 flex items-center justify-between">
+              <div>
+                <p className="font-mono text-[11px] text-muted uppercase tracking-[0.08em]">
+                  pnpm verify · vs. live url
+                </p>
+                <h2 className={`mt-1 ${HEADLINE}`}>All green. 🎉</h2>
+              </div>
+              <Stamp label="Nº 05" />
+            </div>
+            <ul className="space-y-2.5 font-mono text-[13px]">
+              {VERIFY.map((c, i) => (
+                <li key={c.label} className="flex items-baseline gap-3">
+                  <span className="translate-y-1 text-foreground">
+                    <DrawnCheck size={18} delay={0.1 + i * 0.08} />
+                  </span>
+                  <span className="font-medium">{c.label}</span>
+                  <span className="text-muted">{c.detail}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-[15px] text-foreground/80">
+              Plus the sanity queries and all three live scenarios — S1, S2, S3 — passing
+              end-to-end.
+            </p>
+          </Paper>
+        </Ev>
+
+        {/* 18 — Goal achieved */}
+        <Ev time="2:55" mer="pm" color={CAUSE_HEX.environment}>
+          <div className="space-y-5">
+            <Terminal title="claude — /goal">
+              <p className="text-butter">
+                ✔ Goal achieved{" "}
+                <span className="text-background/60">(1h · 1 turn · 296.6k tokens)</span>
+              </p>
+              <p className="mt-2 text-background/55">
+                ↳ on to the delight features — voice, motion, the reveal.
+              </p>
+            </Terminal>
+            <MarginNote rotate={-2}>…and I hadn’t touched it once since 12:30 🤯</MarginNote>
+          </div>
+        </Ev>
+
+        {/* 19 — The thesis / closer */}
+        <Ev time="3:03" mer="pm" color={INK}>
+          <Paper tone="white" rotate={1} className="p-6 sm:p-7">
+            <h2 className={HEADLINE}>One afternoon, one prompt.</h2>
+            <p className="mt-2 text-[15px] text-foreground/85">
+              After 12:30, my only input was a handful of design tweaks. A detailed brief and a
+              strict rubric let the agent one-shot the build, grade its own work, and fix its own
+              misses — untouched.
+            </p>
+            <p className="mt-5 flex items-center gap-2 font-hand text-[1.7rem] text-terracotta">
+              <Doodle name="heart" size={24} /> even these notes — made with Claude.
             </p>
           </Paper>
         </Ev>
