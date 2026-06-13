@@ -1,0 +1,13 @@
+query,expect
+red cross,American Red Cross near the top
+help feed hungry families,food banks / hunger-relief orgs
+protect endangered wildlife,wildlife & conservation orgs
+fund cancer research,medical research orgs
+support arts and music education,arts/culture + education orgs
+legal aid for immigrants,civil-rights / legal-aid orgs
+amrican red cros,American Red Cross (misspelled query still resolves)
+help kids in oakland get a fair start,youth/education orgs (CA bias when geo set)
+clean water access,environment / global health orgs
+EXCLUDE political advocacy: feed hungry families,zero political-advocacy orgs in top 10
+EXCLUDE religious: climate and kids future,zero religious orgs in top 10
+EXCLUDE Stanford: scientific research,no org affiliated with Stanford in top 10

@@ -1,0 +1,119 @@
+/**
+ * Single-command verification gate (BRIEF.md §Setup, RUBRIC.md §1).
+ *
+ * Prints a status table across code / unit / lint / flow checks. Exits non-zero
+ * ONLY on deterministic, always-achievable checks so it can run anywhere:
+ *   1. typecheck + biome + vitest          (always)
+ *   2. ingest check                        (when DATABASE_URL is set)
+ *   3. no-leak exclusion queries           (when DATABASE_URL is set)
+ *   4. smoke: BASE_URL / and /api/health   (when BASE_URL is set)
+ *   5. Playwright happy path vs BASE_URL   (when BASE_URL is set)
+ *
+ * Checks whose prerequisites are absent are reported SKIP, never FAIL. As
+ * features land, promote SKIPs to hard checks here.
+ */
+import { execSync } from "node:child_process";
+
+type Status = "PASS" | "FAIL" | "SKIP";
+interface Result {
+  name: string;
+  status: Status;
+  detail?: string;
+  required: boolean;
+}
+
+const results: Result[] = [];
+
+function run(name: string, cmd: string, required = true): Result {
+  try {
+    execSync(cmd, { stdio: "inherit", env: process.env });
+    const r: Result = { name, status: "PASS", required };
+    results.push(r);
+    return r;
+  } catch (err) {
+    const r: Result = {
+      name,
+      status: "FAIL",
+      required,
+      detail: err instanceof Error ? err.message : String(err),
+    };
+    results.push(r);
+    return r;
+  }
+}
+
+function skip(name: string, detail: string): Result {
+  const r: Result = { name, status: "SKIP", detail, required: false };
+  results.push(r);
+  return r;
+}
+
+async function smoke(baseUrl: string) {
+  for (const path of ["/", "/api/health"]) {
+    try {
+      const res = await fetch(new URL(path, baseUrl));
+      results.push({
+        name: `smoke ${path}`,
+        status: res.ok ? "PASS" : "FAIL",
+        required: true,
+        detail: `HTTP ${res.status}`,
+      });
+    } catch (err) {
+      results.push({
+        name: `smoke ${path}`,
+        status: "FAIL",
+        required: true,
+        detail: err instanceof Error ? err.message : String(err),
+      });
+    }
+  }
+}
+
+async function main() {
+  // 1. Always-achievable code checks.
+  run("typecheck", "pnpm typecheck");
+  run("biome", "pnpm lint");
+  run("vitest", "pnpm test");
+
+  // 2-3. Data checks — need a database.
+  if (process.env.DATABASE_URL) {
+    // TODO(/goal): wire ingest-count + no-leak exclusion queries here.
+    skip("ingest", "TODO: implement once ingest lands");
+    skip("no-leak", "TODO: implement once retrieval lands");
+  } else {
+    skip("ingest", "DATABASE_URL not set");
+    skip("no-leak", "DATABASE_URL not set");
+  }
+
+  // 4-5. Live checks — need a deployed/served URL.
+  const baseUrl = process.env.BASE_URL;
+  if (baseUrl) {
+    await smoke(baseUrl);
+    run("playwright", "pnpm e2e", true);
+  } else {
+    skip("smoke", "BASE_URL not set");
+    skip("playwright", "BASE_URL not set");
+  }
+
+  // Status table.
+  const pad = (s: string, n: number) => s.padEnd(n);
+  console.log(`\n${pad("CHECK", 16)} STATUS  DETAIL`);
+  console.log("-".repeat(60));
+  for (const r of results) {
+    const detail = r.detail ? r.detail.split("\n")[0].slice(0, 40) : "";
+    console.log(`${pad(r.name, 16)} ${pad(r.status, 7)} ${detail}`);
+  }
+
+  const failed = results.filter((r) => r.status === "FAIL" && r.required);
+  console.log("-".repeat(60));
+  if (failed.length > 0) {
+    console.log(`\n❌ ${failed.length} required check(s) failed.`);
+    process.exit(1);
+  }
+  console.log("\n✅ All required checks passed.");
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

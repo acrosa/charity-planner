@@ -1,0 +1,18 @@
+node_modules
+.git
+.react-router
+build
+dist
+coverage
+test-results
+playwright-report
+output
+.env
+.env.*
+!.env.example
+# The 13MB corpus is ingested into Postgres out-of-band, not shipped in the image.
+dataset
+qa-test-reports
+*.md
+!README.md
+.DS_Store

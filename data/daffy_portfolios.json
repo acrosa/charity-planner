@@ -1,0 +1,382 @@
+{
+  "meta": {
+    "source": "https://www.daffy.org/portfolios",
+    "capturedOn": "2026-06-13",
+    "note": "Daffy charges no separate investment-management fee beyond membership dues. Portfolios rebalance daily on market days and can be changed anytime from account settings.",
+    "disclaimer": "This is an educational suggestion based on the preferences you shared, not investment advice. Consider consulting a licensed financial professional before investing.",
+    "descriptionsOriginal": true,
+    "riskTier": "Ordinal 1-4 used for facet matching: 1 = capital preservation, 2 = balanced (50/50), 3 = growth (75/25), 4 = aggressive (90/10). Crypto and Custom are tagged separately.",
+    "holdingWeightsAndExpenseRatios": "weight is percent of portfolio; expenseRatioPct is the fund's annual expense ratio in percent. weightedExpenseRatioPct is the portfolio's blended annual expense ratio."
+  },
+  "categories": [
+    { "id": "conservative", "label": "Conservative", "blurb": "Bond-only mixes that prioritize protecting principal over growth." },
+    { "id": "standard", "label": "Standard", "blurb": "Globally diversified stock-and-bond blends across three risk levels." },
+    { "id": "esg", "label": "ESG", "blurb": "The Standard risk levels, screened for environmental, social, and governance criteria." },
+    { "id": "crypto", "label": "Crypto", "blurb": "Diversified blends with a crypto sleeve, plus single-asset and stablecoin options." },
+    { "id": "custom", "label": "Custom", "blurb": "Build your own from 680+ ETFs and 2,500+ stocks, up to 20 holdings." }
+  ],
+  "portfolios": [
+    {
+      "id": "conservative-treasury-reserve",
+      "category": "conservative",
+      "name": "Treasury Reserve",
+      "displayName": "Conservative · Treasury Reserve",
+      "riskLevel": "very_low",
+      "riskTier": 1,
+      "tags": { "esg": false, "crypto": false },
+      "allocation": { "equities": 0, "bonds": 100, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.07,
+      "holdings": [
+        { "ticker": "VBIL", "name": "Vanguard 0-3 Month Treasury Bill ETF", "assetClass": "bond_govt", "weight": 100, "expenseRatioPct": 0.07 }
+      ],
+      "description": "Holds only short-term U.S. Treasury bills. The steadiest option, built to protect principal for funds you expect to grant out soon.",
+      "bestFor": "Money you plan to give away in the near term."
+    },
+    {
+      "id": "conservative-inflation-protected",
+      "category": "conservative",
+      "name": "Inflation-Protected Bonds",
+      "displayName": "Conservative · Inflation-Protected Bonds",
+      "riskLevel": "very_low",
+      "riskTier": 1,
+      "tags": { "esg": false, "crypto": false },
+      "allocation": { "equities": 0, "bonds": 100, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.03,
+      "holdings": [
+        { "ticker": "SCHP", "name": "Schwab U.S. TIPS ETF", "assetClass": "bond_tips", "weight": 70, "expenseRatioPct": 0.03 },
+        { "ticker": "VTIP", "name": "Vanguard Short-Term Inflation-Protected Securities ETF", "assetClass": "bond_tips", "weight": 30, "expenseRatioPct": 0.03 }
+      ],
+      "description": "Treasury inflation-protected securities that keep pace with rising prices, for conservative balances you want shielded from inflation rather than grown aggressively.",
+      "bestFor": "Cautious balances where inflation is the main worry."
+    },
+    {
+      "id": "conservative-diversified-bonds",
+      "category": "conservative",
+      "name": "Diversified Bonds",
+      "displayName": "Conservative · Diversified Bonds",
+      "riskLevel": "low",
+      "riskTier": 1,
+      "tags": { "esg": false, "crypto": false },
+      "defaultForCategory": true,
+      "allocation": { "equities": 0, "bonds": 100, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.12,
+      "holdings": [
+        { "ticker": "GBIL", "name": "Goldman Sachs Access Treasury 0-1 Year ETF", "assetClass": "bond_govt", "weight": 30, "expenseRatioPct": 0.12 },
+        { "ticker": "SCHO", "name": "Schwab Short-Term U.S. Treasury ETF", "assetClass": "bond_govt", "weight": 30, "expenseRatioPct": 0.03 },
+        { "ticker": "SHYG", "name": "iShares 0-5 Year High Yield Corporate Bond ETF", "assetClass": "bond_high_yield", "weight": 20, "expenseRatioPct": 0.30 },
+        { "ticker": "USHY", "name": "iShares Broad USD High Yield Corporate Bond ETF", "assetClass": "bond_high_yield", "weight": 10, "expenseRatioPct": 0.08 },
+        { "ticker": "FLRN", "name": "SPDR Bloomberg Investment Grade Floating Rate ETF", "assetClass": "bond_floating", "weight": 5, "expenseRatioPct": 0.15 },
+        { "ticker": "VGLT", "name": "Vanguard Long-Term Treasury ETF", "assetClass": "bond_govt", "weight": 5, "expenseRatioPct": 0.03 }
+      ],
+      "description": "A spread of short- and long-term, government and high-yield bonds. Low volatility with a touch more yield than Treasuries alone, a sensible default for cautious givers.",
+      "bestFor": "A steady, low-volatility default for short horizons."
+    },
+    {
+      "id": "standard-balanced",
+      "category": "standard",
+      "name": "Balanced",
+      "displayName": "Standard · Balanced",
+      "riskLevel": "moderate",
+      "riskTier": 2,
+      "tags": { "esg": false, "crypto": false },
+      "esgEquivalentId": "esg-conservative",
+      "allocation": { "equities": 50, "bonds": 50, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.04,
+      "holdings": [
+        { "ticker": "VTI", "name": "Vanguard Total Stock Market ETF", "assetClass": "equity_us", "weight": 40, "expenseRatioPct": 0.03 },
+        { "ticker": "BND", "name": "Vanguard Total Bond Market ETF", "assetClass": "bond_us", "weight": 35, "expenseRatioPct": 0.03 },
+        { "ticker": "BNDX", "name": "Vanguard Total International Bond ETF", "assetClass": "bond_intl", "weight": 15, "expenseRatioPct": 0.07 },
+        { "ticker": "VXUS", "name": "Vanguard Total International Stock ETF", "assetClass": "equity_intl", "weight": 10, "expenseRatioPct": 0.05 }
+      ],
+      "description": "An even split of global stocks and bonds. Modest growth with a cushion against market swings, suited to medium horizons or an undecided risk appetite.",
+      "bestFor": "Medium horizons or when risk preference is unclear."
+    },
+    {
+      "id": "standard-growth",
+      "category": "standard",
+      "name": "Growth",
+      "displayName": "Standard · Growth",
+      "riskLevel": "moderate_high",
+      "riskTier": 3,
+      "tags": { "esg": false, "crypto": false },
+      "esgEquivalentId": "esg-moderate",
+      "allocation": { "equities": 75, "bonds": 25, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.04,
+      "holdings": [
+        { "ticker": "VTI", "name": "Vanguard Total Stock Market ETF", "assetClass": "equity_us", "weight": 50, "expenseRatioPct": 0.03 },
+        { "ticker": "VXUS", "name": "Vanguard Total International Stock ETF", "assetClass": "equity_intl", "weight": 25, "expenseRatioPct": 0.05 },
+        { "ticker": "BND", "name": "Vanguard Total Bond Market ETF", "assetClass": "bond_us", "weight": 15, "expenseRatioPct": 0.03 },
+        { "ticker": "BNDX", "name": "Vanguard Total International Bond ETF", "assetClass": "bond_intl", "weight": 10, "expenseRatioPct": 0.07 }
+      ],
+      "description": "Three-quarters global equities, one-quarter bonds. Tilts toward long-term growth while keeping some ballast, a fit for funds you will grow over several years.",
+      "bestFor": "Funds you'll grow over years with a moderate risk appetite."
+    },
+    {
+      "id": "standard-aggressive",
+      "category": "standard",
+      "name": "Aggressive",
+      "displayName": "Standard · Aggressive",
+      "riskLevel": "high",
+      "riskTier": 4,
+      "tags": { "esg": false, "crypto": false },
+      "esgEquivalentId": "esg-aggressive",
+      "allocation": { "equities": 90, "bonds": 10, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.04,
+      "holdings": [
+        { "ticker": "VTI", "name": "Vanguard Total Stock Market ETF", "assetClass": "equity_us", "weight": 55, "expenseRatioPct": 0.03 },
+        { "ticker": "VXUS", "name": "Vanguard Total International Stock ETF", "assetClass": "equity_intl", "weight": 35, "expenseRatioPct": 0.05 },
+        { "ticker": "BND", "name": "Vanguard Total Bond Market ETF", "assetClass": "bond_us", "weight": 5, "expenseRatioPct": 0.03 },
+        { "ticker": "BNDX", "name": "Vanguard Total International Bond ETF", "assetClass": "bond_intl", "weight": 5, "expenseRatioPct": 0.07 }
+      ],
+      "description": "Almost entirely global equities. Maximizes long-run growth and accepts bigger swings, for patient balances with a long runway.",
+      "bestFor": "Long horizons and an appetite for volatility."
+    },
+    {
+      "id": "esg-conservative",
+      "category": "esg",
+      "name": "Conservative ESG",
+      "displayName": "ESG · Conservative",
+      "riskLevel": "moderate",
+      "riskTier": 2,
+      "tags": { "esg": true, "crypto": false },
+      "allocation": { "equities": 50, "bonds": 50, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.15,
+      "holdings": [
+        { "ticker": "ESGU", "name": "iShares ESG Aware MSCI USA ETF", "assetClass": "equity_us_esg", "weight": 40, "expenseRatioPct": 0.15 },
+        { "ticker": "EAGG", "name": "iShares ESG Aware U.S. Aggregate Bond ETF", "assetClass": "bond_us_esg", "weight": 35, "expenseRatioPct": 0.11 },
+        { "ticker": "BGRN", "name": "iShares USD Green Bond ETF", "assetClass": "bond_green", "weight": 15, "expenseRatioPct": 0.20 },
+        { "ticker": "ESGD", "name": "iShares ESG Aware MSCI EAFE ETF", "assetClass": "equity_intl_esg", "weight": 8, "expenseRatioPct": 0.21 },
+        { "ticker": "ESGE", "name": "iShares ESG Aware MSCI EM ETF", "assetClass": "equity_em_esg", "weight": 2, "expenseRatioPct": 0.26 }
+      ],
+      "description": "A balanced stock-and-bond mix screened for environmental, social, and governance criteria, including green bonds. Steady growth that reflects sustainability values.",
+      "bestFor": "Sustainability-minded givers wanting a balanced mix."
+    },
+    {
+      "id": "esg-moderate",
+      "category": "esg",
+      "name": "Moderate ESG",
+      "displayName": "ESG · Moderate",
+      "riskLevel": "moderate_high",
+      "riskTier": 3,
+      "tags": { "esg": true, "crypto": false },
+      "allocation": { "equities": 75, "bonds": 25, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.17,
+      "holdings": [
+        { "ticker": "ESGU", "name": "iShares ESG Aware MSCI USA ETF", "assetClass": "equity_us_esg", "weight": 50, "expenseRatioPct": 0.15 },
+        { "ticker": "ESGD", "name": "iShares ESG Aware MSCI EAFE ETF", "assetClass": "equity_intl_esg", "weight": 20, "expenseRatioPct": 0.21 },
+        { "ticker": "EAGG", "name": "iShares ESG Aware U.S. Aggregate Bond ETF", "assetClass": "bond_us_esg", "weight": 15, "expenseRatioPct": 0.11 },
+        { "ticker": "BGRN", "name": "iShares USD Green Bond ETF", "assetClass": "bond_green", "weight": 10, "expenseRatioPct": 0.20 },
+        { "ticker": "ESGE", "name": "iShares ESG Aware MSCI EM ETF", "assetClass": "equity_em_esg", "weight": 5, "expenseRatioPct": 0.26 }
+      ],
+      "description": "Growth-leaning ESG-screened global equities anchored by ESG and green bonds. Keeps investments aligned to environmental and social standards while reaching for growth.",
+      "bestFor": "Sustainability values with a multi-year growth horizon."
+    },
+    {
+      "id": "esg-aggressive",
+      "category": "esg",
+      "name": "Aggressive ESG",
+      "displayName": "ESG · Aggressive",
+      "riskLevel": "high",
+      "riskTier": 4,
+      "tags": { "esg": true, "crypto": false },
+      "allocation": { "equities": 90, "bonds": 10, "cash": 0, "crypto": 0 },
+      "weightedExpenseRatioPct": 0.18,
+      "holdings": [
+        { "ticker": "ESGU", "name": "iShares ESG Aware MSCI USA ETF", "assetClass": "equity_us_esg", "weight": 55, "expenseRatioPct": 0.15 },
+        { "ticker": "ESGD", "name": "iShares ESG Aware MSCI EAFE ETF", "assetClass": "equity_intl_esg", "weight": 25, "expenseRatioPct": 0.21 },
+        { "ticker": "ESGE", "name": "iShares ESG Aware MSCI EM ETF", "assetClass": "equity_em_esg", "weight": 10, "expenseRatioPct": 0.26 },
+        { "ticker": "EAGG", "name": "iShares ESG Aware U.S. Aggregate Bond ETF", "assetClass": "bond_us_esg", "weight": 5, "expenseRatioPct": 0.11 },
+        { "ticker": "BGRN", "name": "iShares USD Green Bond ETF", "assetClass": "bond_green", "weight": 5, "expenseRatioPct": 0.20 }
+      ],
+      "description": "Nearly all ESG-screened global equities. Maximum long-term growth for sustainability-minded givers with a long horizon.",
+      "bestFor": "Sustainability values, long horizon, high risk tolerance."
+    },
+    {
+      "id": "crypto-diversified-conservative",
+      "category": "crypto",
+      "name": "Diversified Conservative",
+      "displayName": "Crypto · Diversified Conservative",
+      "riskLevel": "moderate",
+      "riskTier": 2,
+      "tags": { "esg": false, "crypto": true },
+      "defaultForCategory": true,
+      "allocation": { "equities": 57, "bonds": 38, "cash": 0, "crypto": 5 },
+      "weightedExpenseRatioPct": 0.16,
+      "holdings": [
+        { "ticker": "VTI", "name": "Vanguard Total Stock Market ETF", "assetClass": "equity_us", "weight": 36, "expenseRatioPct": 0.03 },
+        { "ticker": "BND", "name": "Vanguard Total Bond Market ETF", "assetClass": "bond_us", "weight": 27, "expenseRatioPct": 0.03 },
+        { "ticker": "VXUS", "name": "Vanguard Total International Stock ETF", "assetClass": "equity_intl", "weight": 21, "expenseRatioPct": 0.05 },
+        { "ticker": "BNDX", "name": "Vanguard Total International Bond ETF", "assetClass": "bond_intl", "weight": 11, "expenseRatioPct": 0.07 },
+        { "ticker": "BITW", "name": "Bitwise 10 Crypto Index Fund", "assetClass": "crypto", "weight": 5, "expenseRatioPct": 2.50 }
+      ],
+      "description": "A mainstream stock-and-bond core with a small 5% sleeve of diversified crypto, for givers curious about digital assets without betting the fund on them.",
+      "bestFor": "Crypto-curious givers who still want a diversified base."
+    },
+    {
+      "id": "crypto-diversified-aggressive",
+      "category": "crypto",
+      "name": "Diversified Aggressive",
+      "displayName": "Crypto · Diversified Aggressive",
+      "riskLevel": "high",
+      "riskTier": 4,
+      "tags": { "esg": false, "crypto": true },
+      "allocation": { "equities": 72, "bonds": 18, "cash": 0, "crypto": 10 },
+      "weightedExpenseRatioPct": 0.05,
+      "holdings": [
+        { "ticker": "VTI", "name": "Vanguard Total Stock Market ETF", "assetClass": "equity_us", "weight": 45, "expenseRatioPct": 0.03 },
+        { "ticker": "VXUS", "name": "Vanguard Total International Stock ETF", "assetClass": "equity_intl", "weight": 27, "expenseRatioPct": 0.05 },
+        { "ticker": "BND", "name": "Vanguard Total Bond Market ETF", "assetClass": "bond_us", "weight": 13, "expenseRatioPct": 0.03 },
+        { "ticker": "BITB", "name": "Bitwise Bitcoin ETF", "assetClass": "crypto", "weight": 10, "expenseRatioPct": 0.20 },
+        { "ticker": "BNDX", "name": "Vanguard Total International Bond ETF", "assetClass": "bond_intl", "weight": 5, "expenseRatioPct": 0.07 }
+      ],
+      "description": "A growth-oriented stock-and-bond base with a 10% diversified-crypto allocation, for those who want meaningful digital-asset exposure inside a diversified fund.",
+      "bestFor": "Higher risk tolerance and a deliberate crypto allocation."
+    },
+    {
+      "id": "crypto-blended",
+      "category": "crypto",
+      "name": "Blended",
+      "displayName": "Crypto · Blended",
+      "riskLevel": "very_high",
+      "riskTier": null,
+      "tags": { "esg": false, "crypto": true },
+      "allocation": { "equities": 0, "bonds": 0, "cash": 0, "crypto": 100 },
+      "holdings": [
+        { "ticker": "BTC", "name": "Bitcoin", "assetClass": "crypto", "weight": 60 },
+        { "ticker": "ETH", "name": "Ethereum", "assetClass": "crypto", "weight": 30 },
+        { "ticker": "SOL", "name": "Solana", "assetClass": "crypto", "weight": 10 }
+      ],
+      "description": "A pure digital-asset basket weighted toward Bitcoin, with Ethereum and Solana. Highly volatile and only for explicitly crypto-focused givers.",
+      "bestFor": "Givers who specifically want broad crypto exposure."
+    },
+    {
+      "id": "crypto-bitcoin",
+      "category": "crypto",
+      "name": "Bitcoin",
+      "displayName": "Crypto · Bitcoin",
+      "riskLevel": "very_high",
+      "riskTier": null,
+      "tags": { "esg": false, "crypto": true },
+      "allocation": { "equities": 0, "bonds": 0, "cash": 0, "crypto": 100 },
+      "holdings": [
+        { "ticker": "BTC", "name": "Bitcoin", "assetClass": "crypto", "weight": 100 }
+      ],
+      "description": "A single-asset Bitcoin position. Highly volatile, for givers who specifically want Bitcoin exposure.",
+      "bestFor": "Explicit Bitcoin-only preference."
+    },
+    {
+      "id": "crypto-ethereum",
+      "category": "crypto",
+      "name": "Ethereum",
+      "displayName": "Crypto · Ethereum",
+      "riskLevel": "very_high",
+      "riskTier": null,
+      "tags": { "esg": false, "crypto": true },
+      "allocation": { "equities": 0, "bonds": 0, "cash": 0, "crypto": 100 },
+      "holdings": [
+        { "ticker": "ETH", "name": "Ethereum", "assetClass": "crypto", "weight": 100 }
+      ],
+      "description": "A single-asset Ethereum position. Highly volatile, for givers who specifically want Ethereum exposure.",
+      "bestFor": "Explicit Ethereum-only preference."
+    },
+    {
+      "id": "crypto-solana",
+      "category": "crypto",
+      "name": "Solana",
+      "displayName": "Crypto · Solana",
+      "riskLevel": "very_high",
+      "riskTier": null,
+      "tags": { "esg": false, "crypto": true },
+      "allocation": { "equities": 0, "bonds": 0, "cash": 0, "crypto": 100 },
+      "holdings": [
+        { "ticker": "SOL", "name": "Solana", "assetClass": "crypto", "weight": 100 }
+      ],
+      "description": "A single-asset Solana position. Highly volatile, for givers who specifically want Solana exposure.",
+      "bestFor": "Explicit Solana-only preference."
+    },
+    {
+      "id": "crypto-usdc",
+      "category": "crypto",
+      "name": "USDC",
+      "displayName": "Crypto · USDC",
+      "riskLevel": "very_low",
+      "riskTier": null,
+      "tags": { "esg": false, "crypto": true, "stablecoin": true },
+      "allocation": { "equities": 0, "bonds": 0, "cash": 0, "crypto": 100 },
+      "holdings": [
+        { "ticker": "USDC", "name": "USD Coin (stablecoin)", "assetClass": "stablecoin", "weight": 100 }
+      ],
+      "description": "A U.S.-dollar stablecoin held one-to-one. Minimal price volatility, a way to keep a crypto-rails balance steady.",
+      "bestFor": "Holding a crypto-rails balance without price swings."
+    }
+  ],
+  "custom": {
+    "id": "custom",
+    "category": "custom",
+    "name": "Custom",
+    "displayName": "Custom Portfolio",
+    "tags": { "esg": false, "crypto": false, "custom": true },
+    "maxHoldings": 20,
+    "universe": { "etfs": "680+", "stocks": "2500+", "providers": ["Vanguard", "iShares", "Fidelity", "Bitwise"] },
+    "description": "Build your own portfolio of up to 20 holdings from 680+ low-cost ETFs and 2,500+ individual stocks. Best when you have specific holdings in mind, strong investing opinions, or constraints the standard portfolios don't capture.",
+    "bestFor": "Specific holdings, named ETFs, or unusual constraints."
+  },
+  "selection": {
+    "description": "Deterministic facet -> portfolio mapping for report section 'Where your giving fund lives' (BRIEF.md §7.6). No LLM call. Evaluate rules top to bottom; first match wins. Inputs are derived from the captured facets.",
+    "inputs": {
+      "cryptoMentioned": "true only if the user EXPLICITLY mentioned crypto/Bitcoin/Ethereum/etc. in values_text or elsewhere. Never inferred, never default.",
+      "namedCoin": "one of bitcoin|ethereum|solana|usdc if the user named a specific coin, else null.",
+      "highlySpecific": "true if the user expressed unusual exclusions, named individual holdings/ETFs, or strong opinions about investing.",
+      "esgSignal": "true if causes include environment/climate OR values_text is ESG-adjacent (sustainability, climate, clean energy, social responsibility).",
+      "horizon": "facet horizon: year_by_year | multi_year | lifetime | legacy | null",
+      "risk": "facet risk: proven | balanced | experimental | null"
+    },
+    "riskToTier": { "proven": 2, "balanced": 3, "experimental": 4, "null": 2 },
+    "rules": [
+      {
+        "id": "crypto-explicit",
+        "when": "cryptoMentioned === true",
+        "recommend": "if namedCoin then crypto-<namedCoin>; else if risk === 'experimental' then crypto-diversified-aggressive; else crypto-diversified-conservative",
+        "reasonTemplate": "Because you specifically mentioned crypto, this keeps a diversified core with a measured digital-asset sleeve."
+      },
+      {
+        "id": "custom-specific",
+        "when": "highlySpecific === true",
+        "recommend": "custom",
+        "reasonTemplate": "Your preferences are specific enough that a custom portfolio of hand-picked holdings will fit better than a standard mix."
+      },
+      {
+        "id": "esg-by-risk",
+        "when": "esgSignal === true && horizon != null",
+        "recommend": "horizon === 'year_by_year' ? esg-conservative : (tier 4 -> esg-aggressive, tier 3 -> esg-moderate, else esg-conservative)",
+        "reasonTemplate": "Your values point toward sustainability, so this matches your risk level with an ESG-screened mix."
+      },
+      {
+        "id": "near-term",
+        "when": "horizon === 'year_by_year'",
+        "recommend": "conservative-diversified-bonds",
+        "reasonTemplate": "Since you plan to give as you go, this protects your balance for near-term grants."
+      },
+      {
+        "id": "long-horizon-by-risk",
+        "when": "horizon in ['multi_year','lifetime','legacy']",
+        "recommend": "tier 4 -> standard-aggressive, tier 3 -> standard-growth, else standard-balanced",
+        "reasonTemplate": "Because you'll grow your fund over time, this leans into growth at your risk level."
+      },
+      {
+        "id": "default-balanced",
+        "when": "risk != null",
+        "recommend": "tier 4 -> standard-aggressive, tier 3 -> standard-growth, else standard-balanced",
+        "reasonTemplate": "This balances growth and stability based on the risk level you described."
+      }
+    ],
+    "fallbackWhenHorizonUnknown": {
+      "description": "BRIEF.md §7.6: if horizon is unknown, present a fork as guidance rather than a single pick.",
+      "fork": [
+        { "ifYouGiveAsYouGo": "conservative-diversified-bonds" },
+        { "ifYouGrowYourFundFirst": "standard-growth" }
+      ]
+    },
+    "omitSectionWhen": "No confident match (e.g. no horizon, no risk, no values signal). BRIEF.md §7.6: any uncertainty -> omit the section entirely rather than guess."
+  }
+}

@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+.vite/
+.react-router/
+*.tsbuildinfo
+
+# Ingest / pipeline artifacts
+output/
+
+# Env / secrets (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+.mcp.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Test / eval artifacts
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+eval/runs/
+
+# Local database
+*.db
+*.sqlite
+*.sqlite3
+
+# Large raw data (100MB file exceeds GitHub's blob limit)
+dataset/charities_full.jsonl
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+dataset/charities_subset.jsonl
