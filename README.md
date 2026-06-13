@@ -15,6 +15,7 @@ with the reasoning and source behind every charity and every figure, and a clear
 handoff to act on the plan through [Daffy](https://www.daffy.org).
 
 > Built for the **Claude Build Day** hackathon.
+> **Live:** https://charity-planner.fly.dev · try the [quick interview](https://charity-planner.fly.dev/plan?mode=quick).
 
 ## How it works
 

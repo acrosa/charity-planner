@@ -46,6 +46,32 @@ const S3_FACETS = {
   crypto: { mentioned: false, coin: null },
 };
 
+test("capture interview screen", async ({ page }) => {
+  await page.goto("/plan?mode=quick");
+  await expect(page.getByLabel("Your answer")).toBeEnabled({ timeout: 60_000 });
+  await page.waitForTimeout(1800); // first question streams in + scene draws
+  await page.screenshot({ path: "qa-test-reports/interview.png", fullPage: false });
+});
+
+test("reduced-motion report still renders all sections", async ({ browser }) => {
+  test.setTimeout(180_000);
+  const ctx = await browser.newContext({ reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  const rec = await page.request.post("/api/recommend", {
+    data: { facets: S3_FACETS, mode: "quick" },
+    timeout: 170_000,
+  });
+  const { report } = await rec.json();
+  const sh = await page.request.post("/api/share", { data: { report } });
+  const { url } = await sh.json();
+  await page.goto(url);
+  await scrollThrough(page);
+  await expect(page.getByRole("heading", { name: /where it goes/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /give on daffy/i }).first()).toBeVisible();
+  await page.screenshot({ path: "qa-test-reports/reduced-motion-report.png", fullPage: true });
+  await ctx.close();
+});
+
 test("capture landing", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
