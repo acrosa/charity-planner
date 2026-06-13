@@ -18,10 +18,11 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx scripts/migrate.ts",
-    "ingest": "tsx scripts/ingest.ts",
-    "sanity": "tsx scripts/sanity.ts",
-    "verify": "tsx scripts/verify.ts"
+    "db:migrate": "tsx --env-file-if-exists=.env.local scripts/migrate.ts",
+    "ingest": "tsx --env-file-if-exists=.env.local scripts/ingest.ts",
+    "sanity": "tsx --env-file-if-exists=.env.local scripts/sanity.ts",
+    "check:services": "tsx --env-file-if-exists=.env.local scripts/check-services.ts",
+    "verify": "tsx --env-file-if-exists=.env.local scripts/verify.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",

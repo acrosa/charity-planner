@@ -32,38 +32,51 @@ export const CAUSE_HEX: Record<CauseBucket, string> = {
   fallback: "#ddd8c9",
 };
 
-// Maps the raw dataset cause slug to the nearest tint bucket. Extend the
-// aliases as real slugs surface during ingest; unknowns fall back to grey.
+// Maps the raw dataset `cause` slug to the nearest tint bucket. Covers every
+// slug present in dataset/charities_10k.jsonl; unknowns fall back to grey.
 const CAUSE_ALIASES: Record<string, CauseBucket> = {
-  health: "health",
+  // health
   healthcare: "health",
-  medical: "health",
-  "human-rights": "human-rights",
-  "human rights": "human-rights",
-  "civil-rights": "human-rights",
+  "mental-health": "health",
+  "disaster-relief": "health",
+  health: "health",
+  // education
   education: "education",
-  schools: "education",
   youth: "education",
-  justice: "justice",
-  legal: "justice",
+  // research
+  "science-tech": "research",
+  "social-science": "research",
   research: "research",
-  science: "research",
-  scientific: "research",
+  // environment
   environment: "environment",
-  climate: "environment",
-  conservation: "environment",
-  arts: "arts",
-  culture: "arts",
+  // arts
   "arts-culture": "arts",
+  sports: "arts",
+  arts: "arts",
+  // animals
   animals: "animals",
-  wildlife: "animals",
-  "animal-welfare": "animals",
+  // food
+  "food-nutrition": "food",
   food: "food",
-  hunger: "food",
-  "food-security": "food",
-  faith: "faith",
+  // faith
   religion: "faith",
-  religious: "faith",
+  faith: "faith",
+  // justice
+  "criminal-justice": "justice",
+  "social-advocacy": "justice",
+  justice: "justice",
+  // human-rights bucket (social/relief/community services)
+  "human-services": "human-rights",
+  "homelessness-housing": "human-rights",
+  international: "human-rights",
+  employment: "human-rights",
+  community: "human-rights",
+  "public-services": "human-rights",
+  "human-rights": "human-rights",
+  // fallback-ish
+  "philanthropy-and-foundations": "fallback",
+  "membership-benefits": "fallback",
+  "unknown-other": "fallback",
 };
 
 export function causeBucket(cause: string | null | undefined): CauseBucket {

@@ -9,15 +9,10 @@
 
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
-import postgres from "postgres";
+import { makeSql } from "../app/db/client";
 
 async function main() {
-  const url = process.env.DATABASE_URL;
-  if (!url) {
-    throw new Error("DATABASE_URL is not set");
-  }
-
-  const sql = postgres(url, { max: 1 });
+  const sql = makeSql(1);
   const db = drizzle(sql);
 
   console.log("[migrate] ensuring extensions: vector, pg_trgm");
