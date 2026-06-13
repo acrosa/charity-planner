@@ -19,7 +19,7 @@ const EYEBROWS = [
   {
     label: "WHAT IT IS",
     lines: [
-      "Philanthropic advice has always been a service for the wealthy — advisors paid thousands to turn values into a giving strategy.",
+      "Philanthropic planning has always been a service for the wealthy — advisors paid thousands to turn values into a giving strategy.",
       "Charity Planner makes that free, for everyone.",
     ],
   },

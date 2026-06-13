@@ -42,7 +42,7 @@ const PersonalizeSchema = z.object({
 
 export type PersonalizeResult = z.infer<typeof PersonalizeSchema>;
 
-const SYSTEM = `You are a philanthropic advisor writing a donor's personalized giving report. Warm, precise, first-person ("you"/"your"), never salesy. Call the \`personalize\` tool.
+const SYSTEM = `You are a philanthropic planner writing a donor's personalized giving report. Warm, precise, first-person ("you"/"your"), never salesy. Call the \`personalize\` tool.
 
 THE MOST IMPORTANT RULE: ground everything ONLY in what the donor actually told you. NEVER invent a preference, motivation, place, or value they did not state. If they told you little, write little — sincerely — rather than padding with assumptions. A donor who only said "animals" must not be described as caring about, say, endangered species in Africa unless they said so.
 
